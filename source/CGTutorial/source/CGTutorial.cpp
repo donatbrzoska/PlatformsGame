@@ -41,11 +41,25 @@ bool secondLight = true;
 //const char * fragmentShaderWithSecondLight = "StandardShadingWithSecondLight.fragmentshader";
 
 
-const char * vertexShader = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CG/source/CGTutorial/resources/StandardShading.vertexshader";
-const char * fragmentShader = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CG/source/CGTutorial/resources/StandardShading.fragmentshader";
+//CHANGE THIS PATH RIGHT HERE TO YOUR PROJECT DIRECTORY PATH
+std::string workingDirectory = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CurrentVersion";
 
-const char * vertexShaderWithSecondLight = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CG/source/CGTutorial/resources/StandardShadingWithSecondLight.vertexshader";
-const char * fragmentShaderWithSecondLight = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CG/source/CGTutorial/resources/StandardShadingWithSecondLight.fragmentshader";
+std::string resourceDirectory = "/source/CGTutorial/resources";
+std::string path = workingDirectory+resourceDirectory;
+
+std::string vertShader(path + "/StandardShading.vertexshader");
+const char * vertexShader = vertShader.c_str();
+
+std::string fragShader(path + "/StandardShading.fragmentshader");
+const char * fragmentShader = fragShader.c_str();
+
+
+std::string vertShaderWSL(path + "/StandardShadingWithSecondLight.vertexshader");
+const char * vertexShaderWithSecondLight = vertShaderWSL.c_str();
+
+std::string fragShaderWSL(path + "/StandardShadingWithSecondLight.fragmentshader");
+const char * fragmentShaderWithSecondLight = fragShaderWSL.c_str();
+
 
 
 #include "Camera.hpp"
@@ -99,7 +113,8 @@ void setstraight() {
 
 //const char * texture = "purple_texture.bmp";
 
-const char * texture = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CG/source/CGTutorial/resources/purple_texture.bmp";
+std::string textures(path+"/purple_texture.bmp");
+const char * texture = textures.c_str();
 
 void error_callback(int error, const char* description)
 {
@@ -391,7 +406,9 @@ int main(void)
 
 
 //    Obj3D teapot("teapot.obj");
-    Obj3D teapot("/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CG/source/CGTutorial/resources/teapot.obj");
+    std::string teapotObj(path+"/teapot.obj");
+    const char * teapotPath = teapotObj.c_str();
+    Obj3D teapot(teapotPath);
 
 	glm::vec3 lightPos = glm::vec3(-1, 2, -1);
 	glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
