@@ -1,0 +1,64 @@
+
+
+void move(std::string command, float steps);
+
+void Player::move(std::string command, float steps) {
+if (command == "forward") {
+//        if (!executeMoveForward) {
+//            executeMoveForward=true;
+//            forwardThread = std::thread(&Player::forward, this);
+//            moveForwardThread.detach();
+//        }
+}
+if (command == "backwards") {
+glm::vec3 lookAtRelativeH = glm::vec3(-cos(Util::degreesToRadians(horizontalRotation)), 0, sin(Util::degreesToRadians(horizontalRotation)));
+position -= stepSize*lookAtRelativeH;
+}
+if (command == "up") {
+position.y += stepSize;
+}
+if (command == "down") {
+position.y -= stepSize;
+}
+if (command == "left") {
+glm::vec3 direction = glm::cross(glm::vec3(0, 1, 0), lookAtRelative);
+position += stepSize*direction;
+}
+if (command == "right") {
+glm::vec3 direction = glm::cross(lookAtRelative, glm::vec3(0, 1, 0));
+position += stepSize*direction;
+}
+updateLookAt();
+updateCamera();
+}
+
+
+
+
+
+
+
+
+
+float alpha = angle(180.0f);
+float animationend = angle(15.0f);
+float armwinkel = angle(40.0f);
+float i = 0;
+float beta = angle(180.0f);
+float speed = angle(2.f);
+float jump = 0.0f;
+float z_armwinkel = angle(0.0f);
+
+float x_pos_human = 0.0f;
+float y_pos_human = 0.0f;
+float z_pos_human = 0.0f;
+bool inair = false;
+
+
+void setstraight() {
+alpha = angle(180.0f);
+armwinkel = angle(40.0f);
+i = 0;
+beta = angle(180.0f);
+z_armwinkel = angle(0.0f);
+}
