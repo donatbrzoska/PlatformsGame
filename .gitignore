@@ -1,0 +1,17 @@
+# VC++ stuff
+*.suo
+*.vcxproj.user
+*.sdf
+*.opensdf
+**/Debug/
+
+# Xcode stuff
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+build/
+
+# linux build output
+platforms/linux/*/bin/
+platforms/linux/*/obj/
+
+.DS_Store
