@@ -9,7 +9,7 @@ Player::Player()
     lookAtAbsolute = position + lookAtRelative;
     
     //THE LOWER THE SLEEP TIME, THE HIGHER THE SPEED
-    sleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(10));
+    sleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(2));
     
     stepSize = 0.02;
     
@@ -19,6 +19,10 @@ Player::Player()
 
 void Player::setCamera(Camera* camera) {
     this->camera = camera;
+}
+
+void Player::setPuppet(Puppet *puppet) {
+    this->puppet = puppet;
 }
 
 void Player::setCollisionDetector(CollisionDetector *collisionDetector) {

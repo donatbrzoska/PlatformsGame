@@ -419,7 +419,7 @@ void drawPuppet(){float a = 45;
 int main(void)
 {
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    puppet = Puppet();
+//    puppet = Puppet();
     player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);

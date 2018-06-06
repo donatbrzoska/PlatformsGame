@@ -15,3 +15,5 @@ platforms/linux/*/bin/
 platforms/linux/*/obj/
 
 .DS_Store
+
+source\ Kopie

@@ -99,3 +99,7 @@ void Puppet::update(glm::vec3 position, float horizontalRotation) {
     this->position = position;
     this->horizontalRotation = horizontalRotation;
 }
+
+Puppet::~Puppet(){
+    
+}
