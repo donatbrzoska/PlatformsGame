@@ -1,0 +1,15 @@
+Window Object is now declared at the beginning and initialized later
+
+Mouse Object is created at the beginning
+-> as soon as the windows gets initialized, the mouse objects needs to be told its window object
+processMouseMove(); has to go into the loop
+
+//glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+
+
+playerObject.setCamera(&c);
+
+PLATFORM-COLLISION DETECTION:
+1. create CollisionDetector Object
+3. create Platforms and call collDetObj.addPlatform(&pltfrm);
+4. ask CollisionDetector Object whether a coordinate collides with Platforms (collDetObj.collision(glm::vec3 co))

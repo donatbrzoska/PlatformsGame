@@ -49,11 +49,13 @@ void Player::turn(std::string command, float angle) {
     }
     updateLookAt();
     updateCamera();
+    updatePuppet();
 }
 
 void Player::updateAndSleep(){
     updateLookAt();
     updateCamera();
+    updatePuppet();
     std::this_thread::sleep_for(sleepTime);
 }
 
@@ -209,6 +211,10 @@ void Player::updateLookAt() {
 
 void Player::updateCamera() {
     camera->update(position, lookAtRelative);
+}
+
+void Player::updatePuppet() {
+    puppet->update(position, horizontalRotation);
 }
 
 Player::~Player()

@@ -9,6 +9,7 @@ Physik (Schwerkraft, Wurfparabel)
 
 
 #later
+positions als Pointer übergeben -> einmal?
 Move left/right hängt von verticalRotation ab
 Zeitabfrage damit Programm überall gleichschnell läuft
 

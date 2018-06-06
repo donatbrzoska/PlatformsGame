@@ -62,12 +62,15 @@ const char * fragmentShaderWithSecondLight = fragShaderWSL.c_str();
 
 
 
+#include "Puppet.hpp"
+Puppet puppet;
+
 #include "Camera.hpp"
 Camera camera;
 
 #include "Player.hpp"
 Player player;
-float playerStepSize = 0.1;
+double playerStepSize = 0.1;
 
 #include "CollisionDetector.hpp"
 CollisionDetector collisionDetector;
@@ -76,39 +79,13 @@ GLFWwindow* window;
 #include "Mouse.hpp"
 Mouse mouse = Mouse();
 
+
 //#include "FrameTimer.hpp"
 #include <chrono>
 int FPS = 30;
 
 
 #include <thread>
-
-
-
-//PUPPET ####################################
-float alpha = 180.0f;
-float animationend = 15.0f;
-float armwinkel = 40.0f;
-float i = 0;
-float beta = 180.0f;
-float speed = 2.0f;
-float jump = 0.0f;
-float z_armwinkel = 0.0f;
-
-float x_pos_human = 0.0f;
-float y_pos_human = 0.0f;
-float z_pos_human = 0.0f;
-bool inair = false;
-
-
-void setstraight() {
-    alpha = 180.0f;
-    armwinkel = 40.0f;
-    i = 0;
-    beta = 180.0f;
-    z_armwinkel = 0.0f;
-}
-
 
 
 //const char * texture = "purple_texture.bmp";
@@ -162,39 +139,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 player.moveRight(false);
             }
             break;
-        case  GLFW_KEY_DOWN:
-            z_pos_human += 0.4;
-        case GLFW_KEY_UP:
-            z_armwinkel = 0;
-            if (i == animationend) {
-                speed *= -1;
-                i = -animationend;
-            }
-            z_pos_human -= 0.2;
-            armwinkel -= speed / 2;
-            beta -= speed;
-            alpha += speed;
-            i++;
-            break;
-        case  GLFW_KEY_LEFT:
-            x_pos_human -= 0.4;
-        case GLFW_KEY_RIGHT:
-            if (i == animationend) {
-                speed *= -1;
-                i = -animationend;
-            }
-            x_pos_human += 0.2;
-            armwinkel -= speed / 2;
-            z_armwinkel += speed / 2;
-            beta -= speed;
-            alpha += speed;
-            i++;
-            break;
-        case GLFW_KEY_C:
-            if (inair == false) {
-                inair = true;
-            }
-            break;
         case GLFW_KEY_SPACE:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.moveUp(true);
@@ -208,6 +152,18 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             } else {
                 player.moveDown(false);
             }
+            break;
+        case GLFW_KEY_UP:
+            puppet.moveForward();
+            break;
+        case GLFW_KEY_DOWN:
+            puppet.moveBackward();
+            break;
+        case GLFW_KEY_LEFT:
+            puppet.moveLeft();
+            break;
+        case GLFW_KEY_RIGHT:
+            puppet.moveRight();
             break;
         default:
             break;
@@ -248,9 +204,9 @@ void sendMVP()
 //Uebung "9" ###################
 void drawCS() {
 
-    float lineWidth = 0.007f;
-//    float lineLength = 0.8f;
-    float lineLength = 2.f;
+    double lineWidth = 0.007f;
+//    double lineLength = 0.8f;
+    double lineLength = 2.f;
 
 	glm::mat4 Save = Model;
 	Model = glm::scale(Model, glm::vec3(lineLength, lineWidth, lineWidth));
@@ -280,8 +236,7 @@ void drawPlatform(glm::vec3 at) {
 }
 
 
-//PUPPET ###### ###### ###### ###### ###### ###### ######
-void drawPart(float h, float s) {
+void drawPart(double h, double s) {
     glm::mat4 Save = Model;
     Model = glm::translate(Model, glm::vec3(0, h / 2, 0));
     Model = glm::scale(Model, glm::vec3(s, h / 2, s));
@@ -289,7 +244,8 @@ void drawPart(float h, float s) {
     drawSphere(10, 10);
     Model = Save;
 }
-void drawPart(float h, float s, float b) {
+
+void drawPart(double h, double s, double b) {
     glm::mat4 Save = Model;
     Model = glm::translate(Model, glm::vec3(b, h / 2, 0));
     Model = glm::scale(Model, glm::vec3(s, h / 2, s));
@@ -298,14 +254,178 @@ void drawPart(float h, float s, float b) {
     Model = Save;
 }
 
+void drawPuppet(){float a = 45;
+    glm::vec3 yv = glm::vec3(0,1,0);
+    
+    double fall = 0.001;
+    double jumpwinkel = 0.0f;
+    
+    //PUPPET
+    Model = glm::mat4(1.0f);
+    
+    glm::mat4 Save = Model;
+    Model = Util::custom_rotate(Model, a, yv);
+    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
+    
+    
+    //jumping
+    if (puppet.inair == true) {
+        puppet.setStraight();
+        puppet.y_pos_human += 3;
+        puppet.inair = false;
+        jumpwinkel = 180;
+    }
+    
+    if (puppet.y_pos_human <= 0) {
+        fall = 0;
+        jumpwinkel = 0;
+    }
+    if (puppet.y_pos_human >= 0) {
+        fall = 0.001;
+    }
+    puppet.y_pos_human -= fall;
+    
+    //drawing human
+    double length = 2.0;
+    double ancle = 0.5;
+    double thickness = 0.3;
+    double gap = 1;
+    
+    //head
+    drawPart(2, 1, 0.5);
+    Model = glm::translate(Model, glm::vec3(0.0, -3, 0.0));
+    
+    //core
+    drawPart(3, 1, 0.5);
+    Model = glm::translate(Model, glm::vec3(0.0, -1.5, 0.0));
+    
+    //gap = 1.75;
+    
+    //becken
+    drawPart(1.5, 1.5 / 2, 0.5);
+    Model = glm::translate(Model, glm::vec3(0.0, 0.5, 0.0));
+    
+    
+    //left leg
+    gap = -0.1;
+    Model = Util::custom_rotate(Model, puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
+    Model = Util::custom_rotate(Model, puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    Model = Util::custom_rotate(Model, -puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
+    
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    Model = glm::translate(Model, glm::vec3(0.0, (-ancle - length) * 2, 0));
+    Model = Util::custom_rotate(Model, -puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
+    Model = Util::custom_rotate(Model, -puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
+    
+    
+    Model = Save;
+    Model = Util::custom_rotate(Model, a, yv);
+    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
+    Model = glm::translate(Model, glm::vec3(0, -4, 0));
+    
+    //right leg
+    gap = 1;
+    
+    Model = Util::custom_rotate(Model, -puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
+    Model = Util::custom_rotate(Model, -puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
+    
+    //.Gelenk
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    
+    //.Oberschenkel
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    
+    Model = Util::custom_rotate(Model, -puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
+    
+    //.Schienbein
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    
+    //.Fuss
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    Model = Util::custom_rotate(Model, puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
+    Model = Util::custom_rotate(Model, puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
+    sendMVP();
+    
+    Model = Save;
+    Model = Util::custom_rotate(Model, a, yv);
+    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
+    
+    //left arm
+    gap = -0.6;
+    Model = Util::custom_rotate(Model, jumpwinkel, glm::vec3(1.0, 0.0, 0.0));
+    
+    Model = Util::custom_rotate(Model, puppet.beta, glm::vec3(1.0, 0.0, 0.0));
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    Model = Util::custom_rotate(Model, puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
+    
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    Model = glm::translate(Model, glm::vec3(0.0, (-ancle - length) * 2, 0));
+    Model = Util::custom_rotate(Model, -puppet.beta, glm::vec3(1.0, 0.0, 0.0));
+    
+    
+    Model = Save;
+    Model = Util::custom_rotate(Model, a, yv);
+    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
+    
+    //right arm
+    gap = 1.6;
+    
+    Model = Util::custom_rotate(Model, jumpwinkel, glm::vec3(1.0, 0.0, 0.0));
+    
+    Model = Util::custom_rotate(Model, -puppet.beta, glm::vec3(1.0, 0.0, 0.0));
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    Model = Util::custom_rotate(Model, puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
+    
+    drawPart(length, thickness, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
+    
+    drawPart(ancle, ancle / 2, gap);
+    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+    Model = Util::custom_rotate(Model, puppet.beta, glm::vec3(1.0, 0.0, 0.0));
+    sendMVP();
+}
+
+
 
 int main(void)
 {
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    puppet = Puppet();
+    player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
     Platform p1(glm::vec3(0, 0, -3));
     collisionDetector.addPlatform(&p1);
+    
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
 //    player.initialize();
@@ -435,15 +555,8 @@ int main(void)
     
     
     //PUPPET ############################
-    //kreis
-    glm::mat4 Save = Model;
-    glm::mat4 Save2 = Model;
-    glm::mat4 Save3 = Model;
-    glm::mat4 Save4 = Model;
     // Eventloop
     
-    float fall = 0.001;
-    float jumpwinkel = 0.0f;
     
     
 	// Eventloop
@@ -461,151 +574,8 @@ int main(void)
 
         // Model matrix : an identity matrix (model will be at the origin)
 
-			//PUPPET
-        Model = glm::mat4(1.0f);
         
-        sendMVP();
-        Model = Save;
-        Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-        Model = glm::translate(Model, glm::vec3(x_pos_human, y_pos_human, z_pos_human));
-        
-        
-        //jumping
-        if (inair == true) {
-            setstraight();
-            y_pos_human += 3;
-            inair = false;
-            jumpwinkel = 180;
-        }
-        
-        if (y_pos_human <= 0) {
-            fall = 0;
-            jumpwinkel = 0;
-        }
-        if (y_pos_human >= 0) {
-            fall = 0.001;
-        }
-        y_pos_human -= fall;
-        
-        //drawing human
-        float length = 2.0;
-        float ancle = 0.5;
-        float thickness = 0.3;
-        float gap = 1;
-        
-        //head
-        drawPart(2, 1, 0.5);
-        Model = glm::translate(Model, glm::vec3(0.0, -3, 0.0));
-        
-        //core
-        drawPart(3, 1, 0.5);
-        Model = glm::translate(Model, glm::vec3(0.0, -1.5, 0.0));
-        
-        //gap = 1.75;
-        
-        //becken
-        drawPart(1.5, 1.5 / 2, 0.5);
-        Model = glm::translate(Model, glm::vec3(0.0, 0.5, 0.0));
-        
-        //left leg
-        gap = -0.1;
-        Model = Util::custom_rotate(Model, alpha, glm::vec3(1.0, 0.0, 0.0));
-        Model = Util::custom_rotate(Model, z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        Model = Util::custom_rotate(Model, -armwinkel, glm::vec3(1.0, 0.0, 0.0));
-        
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        Model = glm::translate(Model, glm::vec3(0.0, (-ancle - length) * 2, 0));
-        Model = Util::custom_rotate(Model, -alpha, glm::vec3(1.0, 0.0, 0.0));
-        Model = Util::custom_rotate(Model, -z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-        
-        
-        Model = Save3;
-        Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-        Model = glm::translate(Model, glm::vec3(x_pos_human, y_pos_human, z_pos_human));
-        Model = glm::translate(Model, glm::vec3(0, -4, 0));
-        
-        //right leg
-        gap = 1;
-        
-        Model = Util::custom_rotate(Model, -alpha, glm::vec3(1.0, 0.0, 0.0));
-        Model = Util::custom_rotate(Model, -z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-        
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        
-        Model = Util::custom_rotate(Model, -armwinkel, glm::vec3(1.0, 0.0, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        Model = Util::custom_rotate(Model, alpha, glm::vec3(1.0, 0.0, 0.0));
-        Model = Util::custom_rotate(Model, z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-        sendMVP();
-        
-        Model = Save2;
-        Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-        Model = glm::translate(Model, glm::vec3(x_pos_human, y_pos_human, z_pos_human));
-        
-        //left arm
-        gap = -0.6;
-        Model = Util::custom_rotate(Model, jumpwinkel, glm::vec3(1.0, 0.0, 0.0));
-        
-        Model = Util::custom_rotate(Model, beta, glm::vec3(1.0, 0.0, 0.0));
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        Model = Util::custom_rotate(Model, armwinkel, glm::vec3(1.0, 0.0, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        Model = glm::translate(Model, glm::vec3(0.0, (-ancle - length) * 2, 0));
-        Model = Util::custom_rotate(Model, -beta, glm::vec3(1.0, 0.0, 0.0));
-        
-        
-        Model = Save4;
-        Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-        Model = glm::translate(Model, glm::vec3(x_pos_human, y_pos_human, z_pos_human));
-        
-        //right arm
-        gap = 1.6;
-        
-        Model = Util::custom_rotate(Model, jumpwinkel, glm::vec3(1.0, 0.0, 0.0));
-        
-        Model = Util::custom_rotate(Model, -beta, glm::vec3(1.0, 0.0, 0.0));
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        Model = Util::custom_rotate(Model, armwinkel, glm::vec3(1.0, 0.0, 0.0));
-        
-        drawPart(length, thickness, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-        
-        drawPart(ancle, ancle / 2, gap);
-        Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-        Model = Util::custom_rotate(Model, beta, glm::vec3(1.0, 0.0, 0.0));
-        sendMVP();
-
+        drawPuppet();
 
 	    //Model = glm::mat4(1.0f);
         //glm::mat4 SaveO = Model;

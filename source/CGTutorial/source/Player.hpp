@@ -4,6 +4,7 @@
 
 #include "Camera.hpp"
 #include "CollisionDetector.hpp"
+#include "Puppet.hpp"
 
 //#include <math.h>
 
@@ -14,6 +15,7 @@
 class Player
 {
     Camera* camera;
+    Puppet* puppet;
     CollisionDetector* collisionDetector;
     glm::vec3 relativeBottomPosition;
     
@@ -66,6 +68,7 @@ class Player
     glm::vec3 bottomPosition();
     void updateLookAt();
     void updateCamera();
+    void updatePuppet();
     
 public:
     glm::vec3 position;
@@ -73,6 +76,7 @@ public:
     Player();
 //    void initialize();
     void setCamera(Camera* camera);
+    void setPuppet(Puppet* puppet);
     void setCollisionDetector(CollisionDetector* collisionDetector);
     void setPosition(glm::vec3 position);
     void setStepSize(float stepSize);

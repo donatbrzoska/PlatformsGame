@@ -1,0 +1,21 @@
+#now/stopped at
+Coordinate Systems from/to of the cube
+
+#todo
+Platformen -> Level Generation
+Collision Detection
+Physik (Schwerkraft, Wurfparabel)
+
+
+
+#later
+Move left/right hängt von verticalRotation ab
+Zeitabfrage damit Programm überall gleichschnell läuft
+
+#maybe later
+delete(camera);?
+
+
+
+#done
+Third Person Camera -> Turn over verhindern
