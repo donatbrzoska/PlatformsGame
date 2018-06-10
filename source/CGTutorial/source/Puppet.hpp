@@ -1,15 +1,18 @@
 #pragma once
 #include <glm/gtc/matrix_transform.hpp>
+#include "MVP.hpp"
+#include "objects.hpp"
+#include "Util.hpp"
 
 class Puppet {
     glm::vec3 position;
     float horizontalRotation;
     
+    
     glm::mat4 Model;
     
-    
-//    void drawPart(double h, double s);
-//    void drawPart(double h, double s, double b);
+    void drawPart(double h, double s);
+    void drawPart(double h, double s, double b);
     
 public:
     float alpha;
@@ -30,6 +33,7 @@ public:
     Puppet();
     
     void update(glm::vec3 position, float horizontalRotation);
+    void drawPuppet();
     
     void setStraight();
     void moveLeft();

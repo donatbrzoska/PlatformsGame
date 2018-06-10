@@ -3,11 +3,15 @@
 //#include "CollisionDetector.hpp"
 
 #include <math.h>
+#include "objects.hpp"
+#include "Util.hpp"
+#include "MVP.hpp"
 
 
 class Platform {
     void determineFromTo();
-    glm::vec3 measures = glm::vec3(2, 0.5, 2);
+    glm::vec3 measures = glm::vec3(0.8, 0.15, 0.8);
+    void drawFromTo(glm::mat4 Model);
 public:
     glm::vec3 position;
     glm::vec3 from;
@@ -16,4 +20,6 @@ public:
 //    static void initialize(CollisionDetector* collisionDetector);
     
     Platform(glm::vec3 position);
+    void draw();
+    ~Platform();
 };

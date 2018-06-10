@@ -79,11 +79,13 @@ GLFWwindow* window;
 #include "Mouse.hpp"
 Mouse mouse = Mouse();
 
+#include "MVP.hpp"
 
 //#include "FrameTimer.hpp"
 #include <chrono>
 int FPS = 30;
 
+#include <vector>
 
 #include <thread>
 
@@ -185,246 +187,47 @@ glm::mat4 View;
 glm::mat4 Model;
 GLuint programID;
 
-void sendMVP()
-{
-	// Our ModelViewProjection : multiplication of our 3 matrices
-	glm::mat4 MVP = Projection * View * Model; 
-	// Send our transformation to the currently bound shader, 
-	// in the "MVP" uniform, konstant fuer alle Eckpunkte
-	glUniformMatrix4fv(glGetUniformLocation(programID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
-
-	//Uebung 6	###################
-	glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
-	glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
-	//#########
-}
-
-
-//Uebung "9" ###################
-void drawCS() {
-
-    double lineWidth = 0.007f;
-//    double lineLength = 0.8f;
-    double lineLength = 2.f;
-
-	glm::mat4 Save = Model;
-	Model = glm::scale(Model, glm::vec3(lineLength, lineWidth, lineWidth));
-	sendMVP();
-	drawCube();
-
-	Model = Save;
-	Model = glm::scale(Model, glm::vec3(lineWidth, lineLength, lineWidth));
-	sendMVP();
-	drawCube();
-
-	Model = Save;
-	Model = glm::scale(Model, glm::vec3(lineWidth, lineWidth, lineLength));
-	sendMVP();
-	drawCube();
-	Model = Save;
-}
-
-void drawPlatform(glm::vec3 at) {
-    glm::mat4 Save = Model;
-//    Model = glm::scale(Model, glm::vec3(2, 0.3, 2));
-    Model = glm::translate(Model, at);
-    drawCS();
-    sendMVP();
-    drawCube();
-    Model=Save;
-}
-
-
-void drawPart(double h, double s) {
-    glm::mat4 Save = Model;
-    Model = glm::translate(Model, glm::vec3(0, h / 2, 0));
-    Model = glm::scale(Model, glm::vec3(s, h / 2, s));
-    sendMVP();
-    drawSphere(10, 10);
-    Model = Save;
-}
-
-void drawPart(double h, double s, double b) {
-    glm::mat4 Save = Model;
-    Model = glm::translate(Model, glm::vec3(b, h / 2, 0));
-    Model = glm::scale(Model, glm::vec3(s, h / 2, s));
-    sendMVP();
-    drawSphere(10, 10);
-    Model = Save;
-}
-
-void drawPuppet(){float a = 45;
-    glm::vec3 yv = glm::vec3(0,1,0);
-    
-    double fall = 0.001;
-    double jumpwinkel = 0.0f;
-    
-    //PUPPET
-    Model = glm::mat4(1.0f);
-    
-    glm::mat4 Save = Model;
-    Model = Util::custom_rotate(Model, a, yv);
-    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
-    
-    
-    //jumping
-    if (puppet.inair == true) {
-        puppet.setStraight();
-        puppet.y_pos_human += 3;
-        puppet.inair = false;
-        jumpwinkel = 180;
-    }
-    
-    if (puppet.y_pos_human <= 0) {
-        fall = 0;
-        jumpwinkel = 0;
-    }
-    if (puppet.y_pos_human >= 0) {
-        fall = 0.001;
-    }
-    puppet.y_pos_human -= fall;
-    
-    //drawing human
-    double length = 2.0;
-    double ancle = 0.5;
-    double thickness = 0.3;
-    double gap = 1;
-    
-    //head
-    drawPart(2, 1, 0.5);
-    Model = glm::translate(Model, glm::vec3(0.0, -3, 0.0));
-    
-    //core
-    drawPart(3, 1, 0.5);
-    Model = glm::translate(Model, glm::vec3(0.0, -1.5, 0.0));
-    
-    //gap = 1.75;
-    
-    //becken
-    drawPart(1.5, 1.5 / 2, 0.5);
-    Model = glm::translate(Model, glm::vec3(0.0, 0.5, 0.0));
-    
-    
-    //left leg
-    gap = -0.1;
-    Model = Util::custom_rotate(Model, puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
-    Model = Util::custom_rotate(Model, puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    Model = Util::custom_rotate(Model, -puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
-    
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    Model = glm::translate(Model, glm::vec3(0.0, (-ancle - length) * 2, 0));
-    Model = Util::custom_rotate(Model, -puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
-    Model = Util::custom_rotate(Model, -puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-    
-    
-    Model = Save;
-    Model = Util::custom_rotate(Model, a, yv);
-    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
-    Model = glm::translate(Model, glm::vec3(0, -4, 0));
-    
-    //right leg
-    gap = 1;
-    
-    Model = Util::custom_rotate(Model, -puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
-    Model = Util::custom_rotate(Model, -puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-    
-    //.Gelenk
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    
-    //.Oberschenkel
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    
-    Model = Util::custom_rotate(Model, -puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
-    
-    //.Schienbein
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    
-    //.Fuss
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    Model = Util::custom_rotate(Model, puppet.alpha, glm::vec3(1.0, 0.0, 0.0));
-    Model = Util::custom_rotate(Model, puppet.z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-    sendMVP();
-    
-    Model = Save;
-    Model = Util::custom_rotate(Model, a, yv);
-    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
-    
-    //left arm
-    gap = -0.6;
-    Model = Util::custom_rotate(Model, jumpwinkel, glm::vec3(1.0, 0.0, 0.0));
-    
-    Model = Util::custom_rotate(Model, puppet.beta, glm::vec3(1.0, 0.0, 0.0));
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    Model = Util::custom_rotate(Model, puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
-    
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    Model = glm::translate(Model, glm::vec3(0.0, (-ancle - length) * 2, 0));
-    Model = Util::custom_rotate(Model, -puppet.beta, glm::vec3(1.0, 0.0, 0.0));
-    
-    
-    Model = Save;
-    Model = Util::custom_rotate(Model, a, yv);
-    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(puppet.x_pos_human, puppet.y_pos_human, puppet.z_pos_human));
-    
-    //right arm
-    gap = 1.6;
-    
-    Model = Util::custom_rotate(Model, jumpwinkel, glm::vec3(1.0, 0.0, 0.0));
-    
-    Model = Util::custom_rotate(Model, -puppet.beta, glm::vec3(1.0, 0.0, 0.0));
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    Model = Util::custom_rotate(Model, puppet.armwinkel, glm::vec3(1.0, 0.0, 0.0));
-    
-    drawPart(length, thickness, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
-    
-    drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    Model = Util::custom_rotate(Model, puppet.beta, glm::vec3(1.0, 0.0, 0.0));
-    sendMVP();
-}
+//void sendMVP()
+//{
+//    // Our ModelViewProjection : multiplication of our 3 matrices
+//    glm::mat4 MVP = Projection * View * Model;
+//    // Send our transformation to the currently bound shader,
+//    // in the "MVP" uniform, konstant fuer alle Eckpunkte
+//    glUniformMatrix4fv(glGetUniformLocation(programID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
+//
+//    //Uebung 6    ###################
+//    glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
+//    glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
+//    glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
+//    //#########
+//}
 
 
 
 int main(void)
 {
+    
+//    glm::vec3 v1(1.0f, 1.0f, 1.0f);
+//    glm::vec3 v2(-1.0f, 1.0f, 1.0f);
+//    glm::vec3 v3(1.0f,-1.0f, 1.0f);
+//    glm::vec3 n1 = v2-v1;
+//    glm::vec3 n2 = v3-v1;
+//    glm::vec3 n = glm::cross(n1, n2);
+//    Util::print("normale: ", n);
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//    puppet = Puppet();
+    puppet = Puppet();
     player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
-    Platform p1(glm::vec3(0, 0, -3));
-    collisionDetector.addPlatform(&p1);
+    player.setPosition(glm::vec3(0,0,0));
+    
+    std::vector<Platform> platforms = {
+        Platform(glm::vec3(0, 0, 0)),
+        Platform(glm::vec3(2, -3, -2))
+    };
+    for (int i=0; i<platforms.size(); i++){
+        collisionDetector.addPlatform(&platforms[i]);
+    }
     
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
@@ -515,6 +318,9 @@ int main(void)
 	}
 	//
 
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    MVP::initialize(programID);
+    
 	//#########
 
 	// Shader auch benutzen !
@@ -558,6 +364,8 @@ int main(void)
     // Eventloop
     
     
+    player.moveForward(true);
+    player.moveForward(false);
     
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
@@ -568,45 +376,59 @@ int main(void)
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 			// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units (Es wird alles von 0.1 bis 100 Einheiten angezeigt)
-			Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+//            Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 		
             View = glm::lookAt(camera.position, camera.lookAtAbsolute, glm::vec3(0,1,0));
-
+        MVP::setView(View);
         // Model matrix : an identity matrix (model will be at the origin)
-
         
-        drawPuppet();
+        
+        glm::mat4 Save = glm::mat4(1.f);
+        
+        
+//        Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+//        MVP::setModel(Model);
+//        drawSphere(10,10);
+//        
+//        Model = Save;
+        
+        
+        if(camera.getThirdPersonMode()){
+//            puppet.drawPuppet();
+            
+            
+            //"SPHERE-Player"
+            Model = Save;
+            Model = glm::translate(Model, player.position);
+            Model = glm::scale(Model, glm::vec3(1.f/5.f, 1.f/5.f, 1.f/5.f));
+            MVP::setModel(Model);
+            drawSphere(10, 10);
+        }
 
-	    //Model = glm::mat4(1.0f);
-        //glm::mat4 SaveO = Model;
-
-        //if (camera.getThirdPersonMode()){
-        //    //"Player"
-        //    SaveO = Model;
-        //    Model = glm::translate(Model, player.position);
-        //    Model = glm::scale(Model, glm::vec3(1.f/5.f, 1.f/5.f, 1.f/5.f));
-        //    sendMVP();
-        //    drawSphere(10, 10);
 
         ////"Teapot"
-        //Model = SaveO;
+        Model = Save;
+        Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
+        Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+//        Model = Util::custom_rotate(Model, 270, glm::vec3(0,1,0));
+//        sendMVP();
+        MVP::setModel(Model);
+        teapot.display();
+        Model = Save;
 
-        //}
-        //Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
-        //Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
-        ////Transformationsmatrizen werden in Grafikkarte geschickt
-        //sendMVP();
-        //teapot.display();
-        //Model = SaveO;
-
-        //drawPlatform(p1.position);
-
-        //Model = glm::translate(Model, p1.from);
-        //drawCS();
-        //Model = SaveO;
-        //Model = glm::translate(Model, p1.to);
-        //drawCS();
-        //Model = SaveO;
+        
+        
+        
+        for (int i=0; i<platforms.size(); i++){
+            platforms[i].draw();
+        }
+//
+//        Model = glm::translate(Model, p1.from);
+//        drawCS();
+//        Model = Save;
+//        Model = glm::translate(Model, p1.to);
+//        drawCS();
+//        Model = Save;
         
 
 

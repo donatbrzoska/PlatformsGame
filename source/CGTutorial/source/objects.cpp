@@ -104,7 +104,18 @@ static void createCube()
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_vertex_buffer_data), g_vertex_buffer_data, GL_STATIC_DRAW);
-
+    
+    glEnableVertexAttribArray(0); // Kein Disable ausführen !
+    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+    glVertexAttribPointer(
+                          0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
+                          3,                  // size
+                          GL_FLOAT,           // type
+                          GL_FALSE,           // normalized?
+                          0,                  // stride
+                          (void*)0            // array buffer offset
+                          );
+    
 	// One color for each vertex. They were generated randomly.
 	static const GLfloat g_color_buffer_data[] = { 
 		0.583f,  0.771f,  0.014f,   0.609f,  0.115f,  0.436f,   0.327f,  0.483f,  0.844f,
@@ -125,17 +136,6 @@ static void createCube()
 	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0); // Kein Disable ausführen !
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glVertexAttribPointer(
-			0,                  // attribute. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
-	);
-
 	// 2nd attribute buffer : colors
 	glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 	glEnableVertexAttribArray(1); // Kein Disable ausführen !
@@ -147,7 +147,45 @@ static void createCube()
 			0,                                // stride
 			(void*)0                          // array buffer offset
 	);
+    
+    
+    // Trying normals
+    GLuint normalbuffer;
+    static const GLfloat g_normal_buffer_data[] = {
+        -1.f,  0.f,  0.f,   -1.f,  0.f, 0.f,   -1.f,  0.f,  0.f,
+         0.f,  0.f, -1.f,    0.f,  0.f, -1.f,   0.f,  0.f, -1.f,
+         0.f, -1.f,  0.f,    0.f, -1.f, 0.f,    0.f, -1.f,  0.f,
+         0.f,  0.f, -1.f,    0.f,  0.f, -1.f,   0.f,  0.f, -1.f,
+        -1.0f, 0.f,  0.f,   -1.0f, 0.f, 0.f,   -1.0f, 0.f,  0.f,
+         0.f, -1.f,  0.f,    0.f, -1.f, 0.f,    0.f, -1.f,  0.f,
+         0.f,  0.f,  1.f,    0.f,  0.f, 1.f,    0.f,  0.f,  1.f,
+         1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+         1.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,  1.0f, 0.0f, 0.0f,
+         0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+         0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,  0.0f, 1.0f, 0.0f,
+         0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f,  0.0f, 0.0f, 1.0f
+    };
+    
+    glGenBuffers(1, &normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_normal_buffer_data), g_normal_buffer_data, GL_STATIC_DRAW);
+    
+    // 2nd attribute buffer : normals
+    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
+    glEnableVertexAttribArray(2); // Kein Disable ausführen !
+    glVertexAttribPointer(
+                          2,                                // attribute. No particular reason for 2, but must match the layout in the shader.
+                          3,                                // size
+                          GL_FLOAT,                         // type
+                          GL_TRUE,                         // normalized?
+                          0,                                // stride
+                          (void*)0                          // array buffer offset
+                          );
 	
+    
+    
+    
+    
 	glBindVertexArray(0);
 }
 

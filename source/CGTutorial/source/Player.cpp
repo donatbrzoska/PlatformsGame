@@ -9,7 +9,7 @@ Player::Player()
     lookAtAbsolute = position + lookAtRelative;
     
     //THE LOWER THE SLEEP TIME, THE HIGHER THE SPEED
-    sleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(2));
+    sleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(8));
     
     stepSize = 0.02;
     
@@ -64,10 +64,12 @@ void Player::updateAndSleep(){
 }
 
 void Player::moveForwardTask(){
-        while(executeMoveForward) {
+    while(executeMoveForward) {
 //    while(moveMap["forward"]->executeMove) {
         glm::vec3 lookAtRelativeH = glm::vec3(-cos(Util::degreesToRadians(horizontalRotation)), 0, sin(Util::degreesToRadians(horizontalRotation)));
         position += stepSize*lookAtRelativeH;
+            
+        puppet->moveForward();
         updateAndSleep();
     }
 }
@@ -87,6 +89,8 @@ void Player::moveBackwardTask(){
     while(executeMoveBackward) {
         glm::vec3 lookAtRelativeH = glm::vec3(-cos(Util::degreesToRadians(horizontalRotation)), 0, sin(Util::degreesToRadians(horizontalRotation)));
         position -= stepSize*lookAtRelativeH;
+        
+        puppet->moveForward();
         updateAndSleep();
     }
 }
@@ -104,8 +108,10 @@ void Player::moveBackward(bool mode){
 
 void Player::moveRightTask(){
     while(executeMoveRight) {
-        glm::vec3 direction = glm::cross(lookAtRelative, glm::vec3(0, 1, 0));
+        glm::vec3 direction = glm::normalize(glm::cross(lookAtRelative, glm::vec3(0, 1, 0)));
         position += stepSize*direction;
+        
+        puppet->moveRight();
         updateAndSleep();
     }
 }
@@ -123,8 +129,10 @@ void Player::moveRight(bool mode){
 
 void Player::moveLeftTask(){
     while(executeMoveLeft) {
-        glm::vec3 direction = glm::cross(glm::vec3(0, 1, 0), lookAtRelative);
+        glm::vec3 direction = glm::normalize(glm::cross(glm::vec3(0, 1, 0), lookAtRelative));
         position += stepSize*direction;
+        
+        puppet->moveLeft();
         updateAndSleep();
     }
 }
@@ -161,11 +169,11 @@ void Player::moveUp(bool mode){
 void Player::moveDownTask(){
     while(executeMoveDown) {
         position.y -= stepSize;
-        updateAndSleep();
         if (collisionDetector->collision(bottomPosition())){
             position.y +=stepSize;
             break;
         }
+        updateAndSleep();
     }
 }
 void Player::moveDown(bool mode){

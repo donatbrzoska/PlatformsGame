@@ -62,3 +62,21 @@ i = 0;
 beta = angle(180.0f);
 z_armwinkel = angle(0.0f);
 }
+
+
+
+
+
+
+
+
+drawPlatform(){
+    glm::mat4 Save = Model;
+    //    Model = glm::scale(Model, glm::vec3(2, 0.3, 2));
+    Model = glm::translate(Model, at);
+    Util::drawCS(Model);
+    //    sendMVP();
+    MVP::setModel(Model);
+    drawCube();
+    Model=Save;
+}

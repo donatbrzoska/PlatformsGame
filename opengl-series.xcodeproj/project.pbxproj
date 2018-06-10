@@ -16,6 +16,7 @@
 		68814FE520C08CDF00344D98 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68814FE320C08CDF00344D98 /* Util.cpp */; };
 		688D7B7C20BDAAC5006AFACC /* Obj3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 688D7B7B20BDAAC5006AFACC /* Obj3D.cpp */; };
 		68C0B44F20C87C2100622730 /* Puppet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68C0B44D20C87C2100622730 /* Puppet.cpp */; };
+		68C0B45220C9754400622730 /* MVP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68C0B45020C9754400622730 /* MVP.cpp */; };
 		B9F1A79E1CFED506001A5641 /* objects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B9F1A7951CFED506001A5641 /* objects.cpp */; };
 		B9F1A79F1CFED506001A5641 /* objloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B9F1A7971CFED506001A5641 /* objloader.cpp */; };
 		B9F1A7A01CFED506001A5641 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B9F1A7991CFED506001A5641 /* shader.cpp */; };
@@ -52,6 +53,8 @@
 		688D7B7B20BDAAC5006AFACC /* Obj3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Obj3D.cpp; sourceTree = "<group>"; };
 		68C0B44D20C87C2100622730 /* Puppet.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Puppet.cpp; sourceTree = "<group>"; };
 		68C0B44E20C87C2100622730 /* Puppet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Puppet.hpp; sourceTree = "<group>"; };
+		68C0B45020C9754400622730 /* MVP.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MVP.cpp; sourceTree = "<group>"; };
+		68C0B45120C9754400622730 /* MVP.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MVP.hpp; sourceTree = "<group>"; };
 		B9F1A7941CFED506001A5641 /* CGTutorial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CGTutorial.cpp; sourceTree = "<group>"; };
 		B9F1A7951CFED506001A5641 /* objects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = objects.cpp; sourceTree = "<group>"; };
 		B9F1A7961CFED506001A5641 /* objects.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = objects.hpp; sourceTree = "<group>"; };
@@ -149,6 +152,8 @@
 				68536D7A20C57777008E38FE /* Platform.hpp */,
 				68C0B44D20C87C2100622730 /* Puppet.cpp */,
 				68C0B44E20C87C2100622730 /* Puppet.hpp */,
+				68C0B45020C9754400622730 /* MVP.cpp */,
+				68C0B45120C9754400622730 /* MVP.hpp */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 				68814FDD20C02AA400344D98 /* Player.cpp in Sources */,
 				C6B18AF01DB8EA340000F975 /* CGTutorial.cpp in Sources */,
 				68536D7820C55807008E38FE /* CollisionDetector.cpp in Sources */,
+				68C0B45220C9754400622730 /* MVP.cpp in Sources */,
 				6874D7B120C4541B00ED38C3 /* FrameTimer.cpp in Sources */,
 				B9F1A79F1CFED506001A5641 /* objloader.cpp in Sources */,
 				E29C2ADA19FCA22D00A6FCD2 /* platform_osx.mm in Sources */,
