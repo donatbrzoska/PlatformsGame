@@ -5,9 +5,9 @@ bool CollisionDetector::coordinateLaysIn(glm::vec3 co, glm::vec3 from, glm::vec3
 //    Util::print("co: ", co);
 //    Util::print("From :", from);
 //    Util::print("To :", to);
-    if (co.x <= to.x & co.x >= from.x)
-        if (co.y <= to.y & co.y >= from.y)
-            if (co.z <= to.z & co.z >= from.z)
+    if (co.x < to.x & co.x > from.x)
+        if (co.y < to.y & co.y > from.y)
+            if (co.z < to.z & co.z > from.z)
                 laysIn =  true;
 //    Util::print(laysIn);
 //    std::cout << std::endl;

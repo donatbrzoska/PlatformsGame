@@ -5,7 +5,7 @@
 Camera::Camera()
 {
     thirdPerson = true;
-    distanceFromPlayer = 4;
+    distanceFromPlayer = 7;
     relativePositionToPlayer = glm::vec3(0, 0, 0);
 }
 

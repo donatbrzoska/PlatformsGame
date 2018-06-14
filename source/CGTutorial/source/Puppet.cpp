@@ -23,7 +23,7 @@ Puppet::Puppet() {
 
 void Puppet::setStraight() {
     alpha = 180.0f;
-    armwinkel = 40.0f;
+    armwinkel = 0.0f;
     i = 0;
     beta = 180.0f;
     z_armwinkel = 0.0f;
@@ -130,20 +130,22 @@ void Puppet::drawPuppet(){
     //PUPPET
 //    Model = Util::custom_rotate(glm::mat4(1.f), horizontalRotation, yVector);//(glm::mat4(1.0f));
     
-    Model = Util::custom_rotate(glm::mat4(1.f), horizontalRotation, yVector);
+//    Model = Util::custom_rotate(glm::mat4(1.f), horizontalRotation, yVector);
+    Model = glm::mat4(1.f);
     glm::mat4 Save = Model;
     
     
-    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    MVP::setModel(Model);
-    drawSphere(10,10);
-    Model = Save;
+//    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
+//    MVP::setModel(Model);
+//    drawSphere(10,10);
+//    Model = Save;
     
 //    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
     
+    Model = glm::translate(Model, position);
+    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
     Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
 //    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z)
-    Model = glm::translate(Model, position);
     
     
     Util::drawCS(Model);
@@ -209,9 +211,10 @@ void Puppet::drawPuppet(){
     
     
     Model = Save;
-//    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
+    Model = glm::translate(Model, position);
+    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
+    
     Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z));
     Model = glm::translate(Model, glm::vec3(0, -4, 0));
     
     //right leg
@@ -236,16 +239,24 @@ void Puppet::drawPuppet(){
     
     //.Fuss
     drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    Model = Util::custom_rotate(Model, /*puppet.*/alpha, glm::vec3(1.0, 0.0, 0.0));
-    Model = Util::custom_rotate(Model, /*puppet.*/z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
+    
+    
+//    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+//    Model = Util::custom_rotate(Model, /*puppet.*/alpha, glm::vec3(1.0, 0.0, 0.0));
+//    Model = Util::custom_rotate(Model, /*puppet.*/z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
     //    sendMVP();
-    MVP::setModel(Model);
+    //    MVP::setModel(Model);
+    
+    
+    
+    
     
     Model = Save;
 //    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
+    Model = glm::translate(Model, position);
+    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
     Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z));
+//    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z));
     
     //left arm
     gap = -0.6;
@@ -269,9 +280,10 @@ void Puppet::drawPuppet(){
     
     
     Model = Save;
-//    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
+    Model = glm::translate(Model, position);
+    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
+    
     Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z));
     
     //right arm
     gap = 1.6;
@@ -290,15 +302,18 @@ void Puppet::drawPuppet(){
     Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
     
     drawPart(ancle, ancle / 2, gap);
-    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-    Model = Util::custom_rotate(Model, /*puppet.*/beta, glm::vec3(1.0, 0.0, 0.0));
-    //    sendMVP();
-    MVP::setModel(Model);
+    
+    
+//    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
+//    Model = Util::custom_rotate(Model, /*puppet.*/beta, glm::vec3(1.0, 0.0, 0.0));
+//    //    sendMVP();
+//    MVP::setModel(Model);
 }
 
 void Puppet::update(glm::vec3 position, float horizontalRotation) {
     this->position = position;
-    this->horizontalRotation = horizontalRotation;
+    this->horizontalRotation = horizontalRotation-90;
+//    Util::print(this->horizontalRotation);
 }
 
 Puppet::~Puppet(){

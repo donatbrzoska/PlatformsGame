@@ -148,6 +148,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 player.moveUp(false);
             }
             break;
+        case GLFW_KEY_Q:
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.jump();
+            }
+            break;
         case GLFW_KEY_LEFT_SHIFT:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.moveDown(true);
@@ -223,7 +228,8 @@ int main(void)
     
     std::vector<Platform> platforms = {
         Platform(glm::vec3(0, 0, 0)),
-        Platform(glm::vec3(2, -3, -2))
+        Platform(glm::vec3(2, -4, -2)),
+        Platform(glm::vec3(-2, 5, 2))
     };
     for (int i=0; i<platforms.size(); i++){
         collisionDetector.addPlatform(&platforms[i]);
@@ -341,7 +347,7 @@ int main(void)
 
 	//second light
 	if (secondLight) {
-		glm::vec3 lightPos2 = glm::vec3(5, -4, -4);	//x positiv -> links, z negativ -> vorne
+		glm::vec3 lightPos2 = glm::vec3(5, -2, -7);	//x positiv -> links, z negativ -> vorne
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace2"), lightPos2.x, lightPos2.y, lightPos2.z);
 		//std::cout << "put second light";
 	}
@@ -394,7 +400,7 @@ int main(void)
         
         
         if(camera.getThirdPersonMode()){
-//            puppet.drawPuppet();
+            puppet.drawPuppet();
             
             
             //"SPHERE-Player"
@@ -402,7 +408,7 @@ int main(void)
             Model = glm::translate(Model, player.position);
             Model = glm::scale(Model, glm::vec3(1.f/5.f, 1.f/5.f, 1.f/5.f));
             MVP::setModel(Model);
-            drawSphere(10, 10);
+            drawSphere(20, 20);
         }
 
 

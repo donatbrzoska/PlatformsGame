@@ -80,3 +80,29 @@ drawPlatform(){
     drawCube();
     Model=Save;
 }
+
+
+
+
+
+
+
+//void Player::initialize(){
+//    struct move* forward = new struct move;
+//    forward->executeMove = false;
+//    forward->task = &Player::moveForwardTask;
+//    moveMap["forward"] = forward;
+//}
+//
+//void Player::move(std::string cmd, bool mode){
+//    struct move* m = moveMap[cmd];
+//    if (mode == true) {
+//        if (!m->executeMove) {
+//            m->executeMove=true;
+//            m->moveThread = std::thread(m->task, this);
+//            m->moveThread.detach();
+//        }
+//    } else {
+//        m->executeMove=false;
+//    }
+//}

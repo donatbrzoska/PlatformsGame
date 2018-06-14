@@ -9,8 +9,9 @@
 //#include <math.h>
 
 #include <thread>
+#include <math.h>
 #include <chrono>
-#include <map>
+//#include <map>
 
 class Player
 {
@@ -21,15 +22,21 @@ class Player
     
     
     float stepSize;
+    float jumpHeight;
+//    float jumpSpeed;
+    bool jumping;
+    
     float horizontalRotation;
+    float additionalHorizontalRotation;
     float verticalRotation;
     
     glm::vec3 lookAtRelative;
     glm::vec3 lookAtAbsolute;
     
-    std::chrono::nanoseconds sleepTime;
+    std::chrono::nanoseconds moveSleepTime;
+    std::chrono::nanoseconds jumpSleepTime;
     
-    void updateAndSleep();
+    void updateAndSleep(std::chrono::nanoseconds t);
     
 //    typedef void (Player::*moveOperation)();
     
@@ -65,10 +72,18 @@ class Player
     bool executeMoveDown;
     void moveDownTask();
     
+    std::thread jumpThread;
+    void jumpTask();
+    
+//    std::thread fallThread;
+//    void fallTask();
+//    void fall();
+    
     glm::vec3 bottomPosition();
     void updateLookAt();
     void updateCamera();
     void updatePuppet();
+    void updatePuppet(float a);
     
 public:
     glm::vec3 position;
@@ -90,6 +105,8 @@ public:
     void moveLeft(bool mode);
     void moveUp(bool mode);
     void moveDown(bool mode);
+    
+    void jump();
     
 //    void move(std::string cmd, bool mode);
     

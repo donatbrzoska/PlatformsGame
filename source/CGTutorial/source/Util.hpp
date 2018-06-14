@@ -15,6 +15,9 @@ public:
     static void print(std::string s);
     static void print(int i);
     static void print(double f);
+    
     static void drawCS(glm::mat4 Model);
+    
+//    static float jumpStep(float maxHeight, );
     ~Util(){};
 };

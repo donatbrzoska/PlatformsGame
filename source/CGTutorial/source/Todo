@@ -1,17 +1,17 @@
 #now/stopped at
-Objekte um sich selbst drehen
-Coordinate Systems from/to of the cube
+
+Collision Detection
+-jegliches bewegen in Physik in while-Schleifen?
+-von unten an Platformen springen
 
 #todo
 Platformen -> Level Generation
-Collision Detection
 Physik (Schwerkraft, Wurfparabel)
 Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft
 
 
 #later
 positions als Pointer übergeben -> einmal?
-Move left/right hängt von verticalRotation ab
 Zeitabfrage damit Programm überall gleichschnell läuft
 Objekte/"Libraries" aufräumen
 
@@ -23,3 +23,6 @@ delete(camera);?
 
 #done
 Third Person Camera -> Turn over verhindern
+Physik: jumpHeight muss variabel sein -> iterations und function muss parametrisiert werden
+
+Move left/right hängt von verticalRotation ab
