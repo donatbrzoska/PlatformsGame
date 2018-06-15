@@ -94,6 +94,7 @@ public:
     void setPuppet(Puppet* puppet);
     void setCollisionDetector(CollisionDetector* collisionDetector);
     void setPosition(glm::vec3 position);
+    void setRelativeBottomPosition(glm::vec3 position);
     void setStepSize(float stepSize);
     
     

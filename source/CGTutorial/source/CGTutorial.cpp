@@ -225,11 +225,14 @@ int main(void)
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
     player.setPosition(glm::vec3(0,0,0));
+    player.setRelativeBottomPosition(glm::vec3(0,4.5,0));
     
     std::vector<Platform> platforms = {
         Platform(glm::vec3(0, 0, 0)),
         Platform(glm::vec3(2, -4, -2)),
-        Platform(glm::vec3(-2, 5, 2))
+        Platform(glm::vec3(-2, 5, 2)),
+        Platform(Util::newPoint(glm::vec3(0,0,0), 1, 3, 1, 5, false)),
+        Platform(Util::newPoint(glm::vec3(0,0,0), 1, 3, 1, 5, false))
     };
     for (int i=0; i<platforms.size(); i++){
         collisionDetector.addPlatform(&platforms[i]);

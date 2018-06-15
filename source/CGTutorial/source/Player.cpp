@@ -12,7 +12,7 @@ Player::Player()
     lookAtAbsolute = position + lookAtRelative;
     
     //THE LOWER THE SLEEP TIME, THE HIGHER THE SPEED
-    moveSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(8));
+    moveSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(1));
     jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(8));
     
     stepSize = 0.02;
@@ -36,6 +36,10 @@ void Player::setCollisionDetector(CollisionDetector *collisionDetector) {
 
 void Player::setPosition(glm::vec3 position) {
     this->position = position;
+}
+
+void Player::setRelativeBottomPosition(glm::vec3 position) {
+    this->relativeBottomPosition = position;
 }
 
 glm::vec3 Player::bottomPosition(){
@@ -143,10 +147,13 @@ void Player::moveLeftTask(){
         glm::vec3 direction = glm::normalize(glm::cross(glm::vec3(0, 1, 0), lookAtRelative));
         position += stepSize*direction;
         
-        puppet->moveLeft();
+//        puppet->moveLeft();
+        additionalHorizontalRotation = 45;
+        puppet->moveForward();
         updateAndSleep(moveSleepTime);
     }
     puppet->setStraight();
+    additionalHorizontalRotation = 0;
 }
 void Player::moveLeft(bool mode){
     if (mode==true) {
