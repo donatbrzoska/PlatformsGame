@@ -5,6 +5,7 @@
 #include "Camera.hpp"
 #include "CollisionDetector.hpp"
 #include "Puppet.hpp"
+#include "Platform.hpp"
 
 //#include <math.h>
 
@@ -24,7 +25,7 @@ class Player
     float stepSize;
     float jumpHeight;
 //    float jumpSpeed;
-    bool jumping;
+    bool inAir;
     
     float horizontalRotation;
     float additionalHorizontalRotation;
@@ -72,7 +73,12 @@ class Player
     bool executeMoveDown;
     void moveDownTask();
     
+    
+    void checkFall();
+    
     std::thread jumpThread;
+    void jump_fall();
+    void jump_up();
     void jumpTask();
     
 //    std::thread fallThread;

@@ -1,13 +1,20 @@
 #now/stopped at
+Collision Detection am Rand
+Texturen überarbeiten
+-> Puppe als Kugel importieren
+-> Platformen durchgehend texturieren
 
-Collision Detection
--jegliches bewegen in Physik in while-Schleifen?
 -von unten an Platformen springen
 
 #todo
 Platformen -> Level Generation
-Physik (Schwerkraft, Wurfparabel)
-Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft
+inAir Mode -> Animation?
+
+#Bugs:
+manchmal wird die Puppe im Jump nach unten gezogen
+manchmal steckt die Puppe in der Platform mit den Füßen
+##fixed:
+Puppe läuft manchmal rückwärts statt vorwärts (vor allem sichtbar beim fw+re laufen)
 
 
 #later
@@ -22,7 +29,13 @@ delete(camera);?
 
 
 #done
-Third Person Camera -> Turn over verhindern
+-Physik (Schwerkraft, Wurfparabel)
+-jegliches bewegen in Physik in while-Schleifen?
+-Third Person Camera -> Turn over verhindern
 Physik: jumpHeight muss variabel sein -> iterations und function muss parametrisiert werden
 
 Move left/right hängt von verticalRotation ab
+
+
+~done
+Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft

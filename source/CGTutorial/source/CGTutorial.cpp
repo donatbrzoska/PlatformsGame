@@ -26,13 +26,14 @@ using namespace glm;
 
 #include "texture.hpp"
 
+#include <stb/stb_image.h>
 
 
 #include <iostream>
 #include "Obj3D.h"
 
 //CUSTOM
-bool secondLight = true;
+bool secondLight = false;
 
 //const char * vertexShader = "StandardShading.vertexshader";
 //const char * fragmentShader = "StandardShading.fragmentshader";
@@ -89,11 +90,31 @@ int FPS = 30;
 
 #include <thread>
 
+glm::vec3 platformSize = glm::vec3(3, 0.6, 3);
 
 //const char * texture = "purple_texture.bmp";
 
+//std::string textures(path+"/purple_texture.bmp");
 std::string textures(path+"/purple_texture.bmp");
 const char * texture = textures.c_str();
+
+std::string iceTextureImage(path+"/ice.bmp");
+const char * iceTexture = iceTextureImage.c_str();
+
+std::string woods1(path+"/wood1.bmp");
+const char * wood1 = woods1.c_str();
+
+std::string woods2(path+"/wood2.bmp");
+const char * wood2 = woods2.c_str();
+
+std::string woods3(path+"/wood3.bmp");
+const char * wood3 = woods3.c_str();
+
+std::string grasss(path+"/grass.bmp");
+const char * grass = grasss.c_str();
+
+std::string deepgrass(path+"/deepGrass.bmp");
+const char * deepGrass = deepgrass.c_str();
 
 void error_callback(int error, const char* description)
 {
@@ -141,14 +162,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 player.moveRight(false);
             }
             break;
-        case GLFW_KEY_SPACE:
+        case GLFW_KEY_Q:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.moveUp(true);
             } else {
                 player.moveUp(false);
             }
             break;
-        case GLFW_KEY_Q:
+        case GLFW_KEY_SPACE:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.jump();
             }
@@ -207,14 +228,104 @@ GLuint programID;
 //    //#########
 //}
 
+//std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms,int delta){
+//    if (num_platforms == 0){
+//        return platforms;
+//    }else {
+//        platforms.push_back(Platform(Util::newPoint(platforms.back().position,0,delta,0,delta, false), platformSize));
+//        return createLevel(num_platforms-1,platforms,delta+2);
+//    }
+//}
+std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms,int minDeltaV,int minDeltaH,int distanceV,int distanceH){
+    if (num_platforms == 0){
+        return platforms;
+    }else {
+        platforms.push_back(Platform(Util::newPoint(glm::vec3(0,0,0), minDeltaV,minDeltaV+distanceV,minDeltaH,minDeltaH+distanceH, false ), platformSize));
+        return createLevel(num_platforms-1,platforms,minDeltaV+distanceV,minDeltaH+distanceH,distanceV,distanceH);
+    }
+}
 
+//GLuint loadTexture(const char * imagepath){
+//
+//    printf("Reading image %s\n", imagepath);
+//
+//    // Data read from the header of the BMP file
+//    unsigned char header[54];
+//    unsigned int dataPos;
+//    unsigned int imageSize;
+//    unsigned int width, height;
+//    // Actual RGB data
+//    unsigned char * data;
+//
+//    // Open the file
+//    FILE * file = fopen(imagepath,"rb");
+//    if (!file)                                {printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0;}
+//
+//    // Read the header, i.e. the 54 first bytes
+//
+//    // If less than 54 bytes are read, problem
+//    if ( fread(header, 1, 54, file)!=54 ){
+//        printf("Not a correct BMP file\n");
+//        return 0;
+//    }
+//
+//
+//    // Read the information about the image
+//    dataPos    = *(int*)&(header[0x0A]);
+//    imageSize  = *(int*)&(header[0x22]);
+//    width      = *(int*)&(header[0x12]);
+//    height     = *(int*)&(header[0x16]);
+//
+//    // Some BMP files are misformatted, guess missing information
+//    if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
+//    if (dataPos==0)      dataPos=54; // The BMP header is done that way
+//
+//    // Create a buffer
+//    unsigned char *image = stbi_load(imagepath,
+//                                     &width,
+//                                     &height,
+//                                     &channels,
+//                                     STBI_rgb_alpha);    //good
+//
+//    // Read the actual data from the file into the buffer
+//    fread(data,1,imageSize,file);
+//
+//    // Everything is in memory now, the file wan be closed
+//    fclose (file);
+//
+//    // Create one OpenGL texture
+//    GLuint textureID;
+//    glGenTextures(1, &textureID);
+//
+//    // "Bind" the newly created texture : all future texture functions will modify this texture
+//    glBindTexture(GL_TEXTURE_2D, textureID);
+//
+//    // Give the image to OpenGL
+//    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, image);
+//
+//    // OpenGL has now copied the data. Free our own version
+//    delete [] data;
+//
+//    // Poor filtering, or ...
+//    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+//    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+//
+//    // ... nice trilinear filtering.
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//    glGenerateMipmap(GL_TEXTURE_2D);
+//
+//    // Return the ID of the texture we just created
+//    return textureID;
+//}
 
 int main(void)
 {
-    
-//    glm::vec3 v1(1.0f, 1.0f, 1.0f);
-//    glm::vec3 v2(-1.0f, 1.0f, 1.0f);
-//    glm::vec3 v3(1.0f,-1.0f, 1.0f);
+//    glm::vec3 v1(1.0f, 0.0f, 1.0f);
+//    glm::vec3 v2(0.0f, 0.0f, 1.0f);
+//    glm::vec3 v3(1.0f, 0.0f, 0.0f);
 //    glm::vec3 n1 = v2-v1;
 //    glm::vec3 n2 = v3-v1;
 //    glm::vec3 n = glm::cross(n1, n2);
@@ -224,18 +335,26 @@ int main(void)
     player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
-    player.setPosition(glm::vec3(0,0,0));
+    player.setPosition(glm::vec3(0,4.5,0));
     player.setRelativeBottomPosition(glm::vec3(0,4.5,0));
     
-    std::vector<Platform> platforms = {
-        Platform(glm::vec3(0, 0, 0)),
-        Platform(glm::vec3(2, -4, -2)),
-        Platform(glm::vec3(-2, 5, 2)),
-        Platform(Util::newPoint(glm::vec3(0,0,0), 1, 3, 1, 5, false)),
-        Platform(Util::newPoint(glm::vec3(0,0,0), 1, 3, 1, 5, false))
-    };
+//    std::vector<Platform> platforms = {
+//        Platform(glm::vec3(0, 0, 0), platformSize)
+//        ,Platform(glm::vec3(10, -4, -8), platformSize),
+//        Platform(glm::vec3(27, -8, -10), platformSize),
+//        Platform(glm::vec3(32, -13, -14), platformSize),
+//        Platform(glm::vec3(39, -17, -9), platformSize),
+//        Platform(glm::vec3(48, -20, -17), platformSize),
+//        Platform(glm::vec3(-8, 5, 8), platformSize),
+//        Platform(Util::newPoint(glm::vec3(0,0,0), 8, 12, 3, 5, false), platformSize)
+//    };
+
+    
+    std::vector<Platform> platforms = { Platform(glm::vec3(0, 0, 0), platformSize)};
+    platforms = createLevel(400,platforms, 9, 1.5, 8.5, 4);
+    
     for (int i=0; i<platforms.size(); i++){
-        collisionDetector.addPlatform(&platforms[i]);
+        collisionDetector.addPlatform(platforms[i]);
     }
     
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -267,7 +386,7 @@ int main(void)
     
 	// Open a window and create its OpenGL context
 	// glfwWindowHint vorher aufrufen, um erforderliche Resourcen festzulegen
-	window = glfwCreateWindow(1024, // Breite
+    window = glfwCreateWindow(1024, // Breite (default: 1024)
 		768,  // Hoehe
 		"Platforms", // Ueberschrift
 		NULL,  // windowed mode
@@ -345,24 +464,32 @@ int main(void)
     const char * teapotPath = teapotObj.c_str();
     Obj3D teapot(teapotPath);
 
-	glm::vec3 lightPos = glm::vec3(-1, 2, -1);
-	glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+//    glm::vec3 lightPos = glm::vec3(-1, 4, -1);
+//    glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
 
 	//second light
 	if (secondLight) {
-		glm::vec3 lightPos2 = glm::vec3(5, -2, -7);	//x positiv -> links, z negativ -> vorne
+		glm::vec3 lightPos2 = glm::vec3(5, 80, -7);	//x positiv -> links, z negativ -> vorne
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace2"), lightPos2.x, lightPos2.y, lightPos2.z);
 		//std::cout << "put second light";
 	}
 	//##########
 
 	// Load the texture
-	//GLuint Texture = loadBMP_custom("mandrill.bmp");
-	GLuint Texture = loadBMP_custom(texture);
+    //GLuint Texture = loadBMP_custom("mandrill.bmp");
+    GLuint Texture = loadBMP_custom(texture);       //good
+    GLuint IceTexture = loadBMP_custom(iceTexture);     //good
+    GLuint Wood1 = loadBMP_custom(wood1);           //good
+    GLuint Wood2 = loadBMP_custom(wood2);
+    GLuint Wood3 = loadBMP_custom(wood3);
+    GLuint Grass = loadBMP_custom(grass);
+    GLuint DeepGrass = loadBMP_custom(deepGrass);   //good
 
+    
+    
 	// Bind our texture in Texture Unit 0 //multiple textures also possible //put in loop, if textures change
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Texture);
 
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
 	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
@@ -392,54 +519,53 @@ int main(void)
         // Model matrix : an identity matrix (model will be at the origin)
         
         
+        glm::vec3 lightPos = player.position + glm::vec3(0,20,0);
+        glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+        
         glm::mat4 Save = glm::mat4(1.f);
         
         
-//        Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-//        MVP::setModel(Model);
-//        drawSphere(10,10);
-//        
-//        Model = Save;
-        
+        glBindTexture(GL_TEXTURE_2D, Wood1);
+//        glBindTexture(GL_TEXTURE_2D, *image);
         
         if(camera.getThirdPersonMode()){
             puppet.drawPuppet();
             
             
             //"SPHERE-Player"
-            Model = Save;
-            Model = glm::translate(Model, player.position);
-            Model = glm::scale(Model, glm::vec3(1.f/5.f, 1.f/5.f, 1.f/5.f));
-            MVP::setModel(Model);
-            drawSphere(20, 20);
+//            Model = Save;
+//            Model = glm::translate(Model, player.position);
+//            Model = glm::scale(Model, glm::vec3(1.f/5.f, 1.f/5.f, 1.f/5.f));
+//            MVP::setModel(Model);
+//            drawSphere(20, 20);
         }
 
-
+        //        if (Platform::getNewPlatformReady()){
+        //            Platform np(Util::newPoint(glm::vec3(0,0,0), 2, 20, 3, 5, false), platformSize);
+        //            platforms.push_back(np);
+        //            collisionDetector.addPlatform(np);
+        //        }
+        
+//        glBindTexture(GL_TEXTURE_2D, IceTexture);
+        
+        for (int i=0; i<platforms.size(); i++){
+            platforms[i].draw();
+        }
+        
+        
+        
+//        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, Texture);
         ////"Teapot"
         Model = Save;
-        Model = glm::translate(Model, glm::vec3(1.5, 0.0, 0.0));
-        Model = glm::scale(Model, glm::vec3(1.0 / 1000.0, 1.0 / 1000.0, 1.0 / 1000.0));
+        Model = glm::translate(Model, glm::vec3(15, 0.0, 15));
+        Model = glm::scale(Model, glm::vec3(1.0 / 100.0, 1.0 / 100.0, 1.0 / 100.0));
+        Model = glm::rotate(Model, Util::degreesToRadians(-100), glm::vec3(1,0,0));
 //        Model = Util::custom_rotate(Model, 270, glm::vec3(0,1,0));
 //        sendMVP();
         MVP::setModel(Model);
         teapot.display();
         Model = Save;
-
-        
-        
-        
-        for (int i=0; i<platforms.size(); i++){
-            platforms[i].draw();
-        }
-//
-//        Model = glm::translate(Model, p1.from);
-//        drawCS();
-//        Model = Save;
-//        Model = glm::translate(Model, p1.to);
-//        drawCS();
-//        Model = Save;
-        
-
 
 
         // Swap buffers -> Bild anzeigen

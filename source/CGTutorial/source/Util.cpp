@@ -6,7 +6,7 @@ glm::vec3 Util::newPoint(glm::vec3 currentPoint, float minDistH, float maxDistH,
     int rangeH = maxDistH - minDistH;
     int rangeV = maxDistV - minDistV;
     
-    srand(time(NULL));
+//    srand(time(NULL));
     float randomH = rand() % (rangeH + 1) + minDistH;
     float randomV = rand() % (rangeV + 1) + minDistV;
     
@@ -19,6 +19,13 @@ glm::vec3 Util::newPoint(glm::vec3 currentPoint, float minDistH, float maxDistH,
         randomDz = rand()% 3 - 1;
     }
     return glm::vec3(currentPoint.x+randomV*randomDx, currentPoint.y + randomV*randomDy, currentPoint.z + randomH*randomDz);
+}
+
+float Util::random(float from, float to) {
+    std::default_random_engine generator;
+    std::uniform_int_distribution<int> distribution(from,to);
+//    std::uniform_real_distribution<float> distribution(from,to);
+    return distribution(generator);
 }
 
 glm::mat4 Util::custom_rotate(glm::mat4 m, float angle, glm::vec3 n){

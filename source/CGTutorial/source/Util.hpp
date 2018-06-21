@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "objects.hpp"
 #include "MVP.hpp"
+#include <random>
 
 class Util {
 public:
@@ -12,6 +13,7 @@ public:
     static glm::mat4 custom_rotate(glm::mat4 m, float angle, glm::vec3 n);
     
     static glm::vec3 newPoint(glm::vec3 currentPoint, float minDistH, float maxDistH, float minDistV, float maxDistV,bool randomDirection);
+    static float random(float from, float to);
     
     static void print(std::string s, glm::vec3 v);
     static void print(std::string s);

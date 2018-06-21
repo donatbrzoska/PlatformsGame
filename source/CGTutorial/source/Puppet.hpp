@@ -25,10 +25,10 @@ public:
     float jump;
     float z_armwinkel;
     
-    float x_pos_human;
-    float y_pos_human;
-    float z_pos_human;
-    bool inair;
+//    float x_pos_human;
+//    float y_pos_human;
+//    float z_pos_human;
+    bool inAir;
     
     Puppet();
     

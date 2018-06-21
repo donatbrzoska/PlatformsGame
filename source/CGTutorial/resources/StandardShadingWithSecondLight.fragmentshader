@@ -28,8 +28,8 @@ void main(){
 	
 	//float LightPower = 50.0f; 					//second light: was 50 before
 	// float LightPower = 50.0f; Uebung 15
-	float LightPower = 4.0f; //Uebung 15
-	float LightPower2 = 50.0f;
+	float LightPower = 80.0f; //Uebung 15
+	float LightPower2 = 3000.0f;
 
 
 	// Material properties

@@ -5,15 +5,15 @@ Player::Player()
     position = glm::vec3(0, 0, -5);
     relativeBottomPosition = glm::vec3(0, 1.f/5.f, 0);
     
-    jumpHeight = 4;
-    jumping = false;
+    jumpHeight = 8;
+    inAir = false;
     
     lookAtRelative = glm::vec3(0, 0, 1);
     lookAtAbsolute = position + lookAtRelative;
     
     //THE LOWER THE SLEEP TIME, THE HIGHER THE SPEED
     moveSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(1));
-    jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(8));
+    jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(3));
     
     stepSize = 0.02;
     
@@ -42,12 +42,12 @@ void Player::setRelativeBottomPosition(glm::vec3 position) {
     this->relativeBottomPosition = position;
 }
 
-glm::vec3 Player::bottomPosition(){
-    return position - relativeBottomPosition;
-}
-
 void Player::setStepSize(float stepSize){
     this->stepSize = stepSize;
+}
+
+glm::vec3 Player::bottomPosition(){
+    return position - relativeBottomPosition;
 }
 
 void Player::turn(std::string command, float angle) {
@@ -72,6 +72,122 @@ void Player::updateAndSleep(std::chrono::nanoseconds t){
     std::this_thread::sleep_for(t);
 }
 
+float function3(float x, float jumpHeight){
+    //    return -0.5*std::pow(x, 2) + jumpHeight;
+    return -(jumpHeight/8)*std::pow(x, 2) + jumpHeight;
+}
+
+void Player::jump_up(){
+    glm::vec3 start = position;
+    int iterations = 30*jumpHeight/2;
+    float nst = std::sqrt(jumpHeight/(jumpHeight/8));
+    //    float lastPosition = 0;
+    for (int i=0; i<=iterations; i++){
+        //        Util::print(function3(-nst + i*(nst)/iterations, jumpHeight));
+        position.y = start.y + function3(-nst + i*(nst)/iterations, jumpHeight);
+        //        float newPosition = function3(-nst + i*(nst)/iterations, jumpHeight);
+        //        float distance = newPosition - lastPosition;
+        //
+        //        float madeDistance = 0;
+        //        while (!collisionDetector->collision(bottomPosition()) & madeDistance<distance) {
+        //            position.y = position.y+0.01;
+        //            madeDistance = madeDistance+0.01;
+        //        }
+        //        lastPosition = lastPosition+distance;
+        updateAndSleep(jumpSleepTime);
+    }
+}
+
+void Player::jump_fall(){
+    glm::vec3 start = position;
+    int iterations = 30*jumpHeight/2;
+    float nst = std::sqrt(jumpHeight/(jumpHeight/8));
+    
+    //in every iteration the distance that has to be done this iteration is calculated and then made in small steps within the while loop
+    float lastRelativePosition = jumpHeight;
+    bool collision = false;
+    
+    int i;
+    for (i=0; i<=iterations & !collision & position.y>-20 /*this last condition is for the checkFall call*/; i++){
+        //        position.y = start.y + function3(i*(nst)/iterations, jumpHeight);
+        float newRelativePosition = function3(i*(nst)/iterations, jumpHeight);
+        float distanceToDo = lastRelativePosition-newRelativePosition;
+        
+        float distanceMade = 0;
+        while (distanceMade<distanceToDo) {
+            if (!collisionDetector->collision(bottomPosition())){
+                position.y = position.y-0.01;
+                distanceMade = distanceMade+0.01;
+            } else {
+                position.y = position.y+0.01;
+                collision = true;
+                Platform::setNewPlatformReady(true);
+                break;
+            }
+        }
+        lastRelativePosition = lastRelativePosition-distanceMade;
+        updateAndSleep(jumpSleepTime);
+    }
+    
+    //if no collision occurred, the player keeps falling
+    if (!collision){
+        for (i=i; !collision & position.y > -20; i++){
+            float newRelativePosition = function3(i*(nst)/iterations, jumpHeight);
+            float distanceToDo = lastRelativePosition-newRelativePosition;
+            
+            float distanceMade = 0;
+            while (distanceMade<distanceToDo) {
+                if (!collisionDetector->collision(bottomPosition())){
+                    position.y = position.y-0.01;
+                    distanceMade = distanceMade+0.01;
+                } else {
+                    position.y = position.y+0.01;
+                    collision = true;
+                    Platform::setNewPlatformReady(true);
+                    break;
+                }
+            }
+            lastRelativePosition = lastRelativePosition-distanceMade;
+            updateAndSleep(jumpSleepTime);
+        }
+    }
+    inAir = false;
+}
+
+void Player::jumpTask(){
+    puppet->inAir = true;
+    jump_up();
+    jump_fall();
+    puppet->inAir = false;
+}
+
+void Player::jump(){
+    if (!inAir) {
+        inAir = true;
+        jumpThread = std::thread(&Player::jumpTask, this);
+        jumpThread.detach();
+    }
+}
+
+void Player::checkFall(){
+    if(!inAir) {
+        position.y = position.y - 0.05;
+        if (!collisionDetector->collision(bottomPosition())){
+            position.y = position.y+0.05;
+            
+//            glm::vec3 start = position;
+//            int iterations = 30*jumpHeight;
+//            float nst = std::sqrt(jumpHeight/(jumpHeight/8));
+//            std::thread f = std::thread(&Player::jump_fall, this, start, nst, iterations/2);
+            inAir = true;
+            std::thread f = std::thread(&Player::jump_fall, this);
+            f.detach();
+        } else {
+            position.y = position.y + 0.05;
+        }
+    }
+}
+
 void Player::moveForwardTask(){
     while(executeMoveForward) {
 //    while(moveMap["forward"]->executeMove) {
@@ -79,6 +195,7 @@ void Player::moveForwardTask(){
         position += stepSize*lookAtRelativeH;
             
         puppet->moveForward();
+        checkFall();
         updateAndSleep(moveSleepTime);
     }
     puppet->setStraight();
@@ -101,6 +218,7 @@ void Player::moveBackwardTask(){
         position -= stepSize*lookAtRelativeH;
         
         puppet->moveForward();
+        checkFall();
         updateAndSleep(moveSleepTime);
     }
     puppet->setStraight();
@@ -125,6 +243,7 @@ void Player::moveRightTask(){
 //        puppet->moveRight();
         additionalHorizontalRotation = -45;
         puppet->moveForward();
+        checkFall();
         updateAndSleep(moveSleepTime);
     }
     puppet->setStraight();
@@ -150,6 +269,7 @@ void Player::moveLeftTask(){
 //        puppet->moveLeft();
         additionalHorizontalRotation = 45;
         puppet->moveForward();
+        checkFall();
         updateAndSleep(moveSleepTime);
     }
     puppet->setStraight();
@@ -209,80 +329,6 @@ void Player::moveDown(bool mode){
     }
 }
 
-float function(float x){
-//    return (5 - std::exp(x - 5));
-    if (x<0)
-        return std::exp(-x+0.5)+20;
-    else
-        return (-std::exp(x+0.5)+20);
-}
-
-float function2(float x) {
-    if (x<=0)
-        return -std::pow(2*x,2);
-    else
-        return std::pow(2*x,2);
-}
-
-float function3(float x, float jumpHeight){
-    return -0.5*std::pow(x, 2) + jumpHeight;
-}
-
-void Player::jumpTask(){
-    glm::vec3 start = position;
-//    int iterations = 60;
-    int iterations = 30*jumpHeight;
-    float nst = std::sqrt(2*jumpHeight);
-    
-    int sleepTime = 8;
-    jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(sleepTime));
-    
-    int i;
-    for (i=0; i<=iterations+1; i++) {       //plus 1 because afterwards we need to check, whether the ground is hit
-        position.y = start.y + function3(-nst + i*(2*nst)/iterations, jumpHeight);
-        
-        if (collisionDetector->collision(bottomPosition())){    //if a collision occures during the jump, the position.y will be corrected up and the jump is done
-            while (collisionDetector->collision(bottomPosition())){
-                position.y = position.y + 0.01;
-            }
-            break;
-        }
-        
-        updateAndSleep(jumpSleepTime);
-    }
-    //at this point, i is equal to (iterations + 2)
-    
-    //if there is no collision after the fall (which happens if we jump down to another platform), the player will just go on falling
-    if (!collisionDetector->collision(bottomPosition())){
-        bool noCollision = true;
-        while (noCollision){
-            position.y = start.y + function3(-nst + i*(2*nst)/iterations, jumpHeight);
-            if (collisionDetector->collision(bottomPosition())) {   //if the collisionpoint is reached, the position.y is incremented to the point where no collision occures anymore
-                while (collisionDetector->collision(bottomPosition())){
-                    position.y = position.y + 0.01;
-                }
-                noCollision = false;
-            }
-//            Util::print(i);
-            i++;
-            updateAndSleep(jumpSleepTime);
-        }
-    } else {    //this happens when the y is the same like before the jump
-//        position.y = start.y + function3(-nst + iterations*(2*nst)/iterations, jumpHeight);
-        position.y = start.y;
-        updateAndSleep(jumpSleepTime);
-    }
-    jumping = false;
-}
-
-void Player::jump(){
-    if (!jumping) {
-        jumping = true;
-        jumpThread = std::thread(&Player::jumpTask, this);
-        jumpThread.detach();
-    }
-}
-
 void Player::updateLookAt() {
     //nach https://de.wikipedia.org/wiki/Kugelkoordinaten
     lookAtRelative.x = -sin(Util::degreesToRadians(verticalRotation)) * cos(Util::degreesToRadians(horizontalRotation));
@@ -299,7 +345,7 @@ void Player::updateCamera() {
 }
 
 void Player::updatePuppet() {
-    puppet->update(position, horizontalRotation+ additionalHorizontalRotation);
+    puppet->update(position, horizontalRotation+additionalHorizontalRotation);
 //    Util::print("something happens");
 }
 Player::~Player()

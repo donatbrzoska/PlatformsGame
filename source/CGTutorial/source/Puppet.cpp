@@ -4,7 +4,7 @@
 
 Puppet::Puppet() {
     alpha = 180.0f;
-    animationend = 120.0f;
+    animationend = 150.0f;
     armwinkel = 0.0f;
     i = 0;
     beta = 180.0f;
@@ -16,7 +16,7 @@ Puppet::Puppet() {
     //x_pos_human = 0.0f;
 //    y_pos_human = 0.0f;
 //    z_pos_human = 0.0f;
-    inair = false;
+    inAir = false;
     
 //    Model = glm::mat4(1.0f);
 }
@@ -27,6 +27,8 @@ void Puppet::setStraight() {
     i = 0;
     beta = 180.0f;
     z_armwinkel = 0.0f;
+    speed = 0.25f;
+    speed2 = speed;
 }
 
 
@@ -94,7 +96,7 @@ void Puppet::setInAirMode(bool mode) {
 //    if (inair == false) {
 //        inair = true;
 //    }
-    inair = mode;
+    inAir = mode;
 }
 
 
@@ -148,16 +150,16 @@ void Puppet::drawPuppet(){
 //    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z)
     
     
-    Util::drawCS(Model);
+//    Util::drawCS(Model);
     
     
     //jumping
-//    if (/*puppet.*/inair == true) {
-//        /*puppet.*/setStraight();
+    if (/*puppet.*/inAir == true) {
+        /*puppet.*/setStraight();
 //        /*puppet.*/position.y += 3;
 //        /*puppet.*/inair = false;
-//        jumpwinkel = 180;
-//    }
+        jumpwinkel = 180;
+    }
 //
 //    if (/*puppet.*/position.y <= 0) {
 //        fall = 0;

@@ -11,15 +11,19 @@
 class Platform {
     void determineFromTo();
     glm::vec3 measures = glm::vec3(0.8, 0.15, 0.8);
-    void drawFromTo(glm::mat4 Model);
+//    void drawFromTo(glm::mat4 Model);
+
 public:
     glm::vec3 position;
     glm::vec3 from;
     glm::vec3 to;
     
+    static bool getNewPlatformReady();
+    static void setNewPlatformReady(bool rdy);
+    
 //    static void initialize(CollisionDetector* collisionDetector);
     
-    Platform(glm::vec3 position);
+    Platform(glm::vec3 position, glm::vec3 measures);
     void draw();
     ~Platform();
 };

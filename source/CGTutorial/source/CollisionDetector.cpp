@@ -23,15 +23,19 @@ bool CollisionDetector::collision(glm::vec3 objectBottomPosition){
 //    }
     for (int i=0; i<platforms.size(); i++) {
 //        std::cout << i << std::endl;;
-        if (coordinateLaysIn(objectBottomPosition, platforms[i]->from, platforms[i]->to)) {
+//        std::cout << "checking platform " << i << std::endl;
+        if (coordinateLaysIn(objectBottomPosition, platforms[i].from, platforms[i].to)) {
             collision = true;
         }
     }
     return collision;
 }
 
-void CollisionDetector::addPlatform(Platform* platform) {
+void CollisionDetector::addPlatform(Platform platform) {
 //    std::list<Platform*>::iterator it = platforms.end();
 //    platforms.insert(it, platform);
-    platforms.insert(platforms.end()++, platform);
+//    platforms.insert(platforms.end()++, platform);
+    platforms.push_back(platform);
+//    std::cout << "there are/is " << platforms.size() << " Platform(s) now" << std::endl;
+    
 }
