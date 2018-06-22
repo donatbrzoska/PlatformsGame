@@ -1,12 +1,13 @@
 #now/stopped at
-Collision Detection am Rand
-Texturen überarbeiten
--> Puppe als Kugel importieren
--> Platformen durchgehend texturieren
-
--von unten an Platformen springen
 
 #todo
+Platformen retexturieren
+
+Platformen größer
+Collision Detection von der Seite
+
+Texturen überarbeiten
+-> Puppe als Kugel importieren
 Platformen -> Level Generation
 inAir Mode -> Animation?
 

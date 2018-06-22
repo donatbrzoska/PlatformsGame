@@ -331,11 +331,14 @@ int main(void)
 //    glm::vec3 n = glm::cross(n1, n2);
 //    Util::print("normale: ", n);
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    glm::vec3 startPosition = glm::vec3(0,5.2,0);
+    
     puppet = Puppet();
     player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
-    player.setPosition(glm::vec3(0,4.5,0));
+    player.setPosition(startPosition);
     player.setRelativeBottomPosition(glm::vec3(0,4.5,0));
     
 //    std::vector<Platform> platforms = {
@@ -518,6 +521,9 @@ int main(void)
         MVP::setView(View);
         // Model matrix : an identity matrix (model will be at the origin)
         
+        if (player.position.y < -15) {
+            player.position = startPosition;
+        }
         
         glm::vec3 lightPos = player.position + glm::vec3(0,20,0);
         glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
@@ -555,17 +561,17 @@ int main(void)
         
         
 //        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Texture);
-        ////"Teapot"
-        Model = Save;
-        Model = glm::translate(Model, glm::vec3(15, 0.0, 15));
-        Model = glm::scale(Model, glm::vec3(1.0 / 100.0, 1.0 / 100.0, 1.0 / 100.0));
-        Model = glm::rotate(Model, Util::degreesToRadians(-100), glm::vec3(1,0,0));
-//        Model = Util::custom_rotate(Model, 270, glm::vec3(0,1,0));
-//        sendMVP();
-        MVP::setModel(Model);
-        teapot.display();
-        Model = Save;
+//        glBindTexture(GL_TEXTURE_2D, Texture);
+//        ////"Teapot"
+//        Model = Save;
+//        Model = glm::translate(Model, glm::vec3(15, 0.0, 15));
+//        Model = glm::scale(Model, glm::vec3(1.0 / 100.0, 1.0 / 100.0, 1.0 / 100.0));
+//        Model = glm::rotate(Model, Util::degreesToRadians(-100), glm::vec3(1,0,0));
+////        Model = Util::custom_rotate(Model, 270, glm::vec3(0,1,0));
+////        sendMVP();
+//        MVP::setModel(Model);
+//        teapot.display();
+//        Model = Save;
 
 
         // Swap buffers -> Bild anzeigen
