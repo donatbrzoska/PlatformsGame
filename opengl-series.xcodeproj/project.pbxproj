@@ -63,8 +63,8 @@
 		B9F1A79A1CFED506001A5641 /* shader.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = shader.hpp; sourceTree = "<group>"; };
 		B9F1A79B1CFED506001A5641 /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture.cpp; sourceTree = "<group>"; };
 		B9F1A79C1CFED506001A5641 /* texture.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = texture.hpp; sourceTree = "<group>"; };
-		C6B18B101DB8FD2B0000F975 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resources; path = source/CGTutorial/resources; sourceTree = "<group>"; };
-		E263994D190D148400B6251A /* CGTutorial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CGTutorial.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6B18B101DB8FD2B0000F975 /* resources */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resources; path = source/Platforms/resources; sourceTree = "<group>"; };
+		E263994D190D148400B6251A /* Platforms.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Platforms.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E2639950190D148400B6251A /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		E2639AE7190D169200B6251A /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		E2639AFB190D16FF00B6251A /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
@@ -104,7 +104,7 @@
 		E263994E190D148400B6251A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E263994D190D148400B6251A /* CGTutorial.app */,
+				E263994D190D148400B6251A /* Platforms.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,7 +115,7 @@
 				E2639ADA190D156500B6251A /* source */,
 			);
 			name = cg;
-			path = source/CGTutorial;
+			path = source/Platforms;
 			sourceTree = "<group>";
 		};
 		E2639ADA190D156500B6251A /* source */ = {
@@ -188,7 +188,7 @@
 			);
 			name = CGTutorial;
 			productName = CGTutorial;
-			productReference = E263994D190D148400B6251A /* CGTutorial.app */;
+			productReference = E263994D190D148400B6251A /* Platforms.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -336,7 +336,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/platforms/osx",
 				);
-				PRODUCT_NAME = CGTutorial;
+				PRODUCT_NAME = Platforms;
 			};
 			name = Debug;
 		};
@@ -347,7 +347,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/platforms/osx",
 				);
-				PRODUCT_NAME = CGTutorial;
+				PRODUCT_NAME = Platforms;
 			};
 			name = Release;
 		};
