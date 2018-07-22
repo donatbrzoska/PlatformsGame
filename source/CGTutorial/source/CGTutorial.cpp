@@ -115,6 +115,9 @@ const char * texture = textures.c_str();
 std::string iceTextureImage(path+"/ice.bmp");
 const char * iceTexture = iceTextureImage.c_str();
 
+std::string iceTextureImage2(path+"/ice2.bmp");
+const char * iceTexture2 = iceTextureImage2.c_str();
+
 std::string woods1(path+"/wood1.bmp");
 const char * wood1 = woods1.c_str();
 
@@ -401,11 +404,12 @@ int main(void)
 	// Load the texture
     GLuint Texture = loadBMP_custom(texture);       //good
     GLuint IceTexture = loadBMP_custom(iceTexture);     //good
+    GLuint IceTexture2 = loadBMP_custom(iceTexture2);     //good
     GLuint Wood1 = loadBMP_custom(wood1);           //good
 //    GLuint Wood2 = loadBMP_custom(wood2);           //good
     GLuint DeepGrass = loadBMP_custom(deepGrass);   //good
     
-    textureLibrary = {Texture, IceTexture, Wood1, DeepGrass};
+    textureLibrary = {Texture, IceTexture, IceTexture2, Wood1, DeepGrass};
     
     
 	// Bind our texture in Texture Unit 0 //multiple textures also possible //put in loop, if textures change
@@ -439,7 +443,7 @@ int main(void)
         glm::vec3 lightPos = player.position + glm::vec3(0,20,0);
         glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
         
-        glm::mat4 Save = glm::mat4(1.f);
+//        glm::mat4 Save = glm::mat4(1.f);
         
         
         glBindTexture(GL_TEXTURE_2D, Wood1);

@@ -9,6 +9,12 @@ H - switch speed mode
 J - change platform texture
 
 
+If you want to cheat:
+ENTER - fly up
+RIGHT SHIFT - fly down
+LEFT/RIGHT/UP/DOWN ARROW - move without gravity
+
+
 
 Program process:
 1. Initialize objects like Player, Camera, Puppet, CollisionDetector, ...

@@ -35,3 +35,12 @@ delete(camera);?
 - Physik: jumpHeight muss variabel sein -> iterations und function muss parametrisiert werden
 - Move left/right hängt von verticalRotation ab
 - Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft
+
+
+
+
+
+
+
+Build and export:
+Product -> Archive -> Export -> Built...
