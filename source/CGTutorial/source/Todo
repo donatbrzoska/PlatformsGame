@@ -1,4 +1,6 @@
 #todo
+Windows Version?
+
 Platformen retexturieren
 
 Collision Detection von der Seite
@@ -43,4 +45,4 @@ delete(camera);?
 
 
 Build and export:
-Product -> Archive -> Export -> Built...
+Product -> Archive -> Export -> Built Products
