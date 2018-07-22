@@ -29,7 +29,7 @@ void Platform::determineFromTo(){
 Platform::Platform(glm::vec3 position, glm::vec3 measures){
     this->position = position;
     this->measures = measures;
-//    collisionDetector->addPlatform(this);
+    //    collisionDetector->addPlatform(this);
     determineFromTo();
 }
 

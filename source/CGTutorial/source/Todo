@@ -1,6 +1,7 @@
 #now/stopped at
 
 #todo
+Dokumentation
 Platformen retexturieren
 
 Platformen größer
@@ -40,3 +41,18 @@ Move left/right hängt von verticalRotation ab
 
 ~done
 Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft
+
+
+
+
+
+
+MANUAL:
+
+WASD zum Steuern
+SPACE zum Springen
+
+T First/Third Person Mode switch
+
+N neues Spiel
+H Speed Mode?

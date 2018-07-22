@@ -26,6 +26,7 @@ bool CollisionDetector::collision(glm::vec3 objectBottomPosition){
 //        std::cout << "checking platform " << i << std::endl;
         if (coordinateLaysIn(objectBottomPosition, platforms[i].from, platforms[i].to)) {
             collision = true;
+            Platform::setNewPlatformReady(true);
         }
     }
     return collision;
@@ -37,5 +38,8 @@ void CollisionDetector::addPlatform(Platform platform) {
 //    platforms.insert(platforms.end()++, platform);
     platforms.push_back(platform);
 //    std::cout << "there are/is " << platforms.size() << " Platform(s) now" << std::endl;
-    
+}
+
+void CollisionDetector::reset(){
+    platforms = std::vector<Platform>();
 }

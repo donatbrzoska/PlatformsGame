@@ -14,5 +14,6 @@ public:
 //    CollisionDetector();
     void addPlatform(Platform platform);
     bool collision(glm::vec3 objectBottomPosition);
+    void reset();
 //    ~CollisionDetector();
 };

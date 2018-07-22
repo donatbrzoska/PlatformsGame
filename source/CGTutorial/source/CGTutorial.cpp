@@ -62,7 +62,6 @@ std::string fragShaderWSL(path + "/StandardShadingWithSecondLight.fragmentshader
 const char * fragmentShaderWithSecondLight = fragShaderWSL.c_str();
 
 
-
 #include "Puppet.hpp"
 Puppet puppet;
 
@@ -71,6 +70,7 @@ Camera camera;
 
 #include "Player.hpp"
 Player player;
+glm::vec3 startPosition = glm::vec3(0,5.3,0);
 double playerStepSize = 0.1;
 
 #include "CollisionDetector.hpp"
@@ -90,7 +90,21 @@ int FPS = 30;
 
 #include <thread>
 
-glm::vec3 platformSize = glm::vec3(3, 0.6, 3);
+//glm::vec3 platformSize = glm::vec3(3, 0.6, 3);
+glm::vec3 platformSize = glm::vec3(4.5, 0.8, 4.5);
+
+std::vector<Platform> platforms;
+
+float minH_ = 9;
+float maxH_ = 16;
+float minH = minH_;
+float maxH = maxH_;
+float minY = 3;
+float maxY = 6;
+//
+float minHSuperSpeed = 18;
+float maxHSuperSpeed = 29.5;
+
 
 //const char * texture = "purple_texture.bmp";
 
@@ -119,6 +133,19 @@ const char * deepGrass = deepgrass.c_str();
 void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
+}
+
+void resetGame(){
+    collisionDetector.reset();
+    platforms = {
+        Platform(glm::vec3(0, -5, -20), glm::vec3(15, 0.8, 15)),
+        Platform(glm::vec3(0, 0, 0), platformSize),
+        Platform(glm::vec3(9, 3, 12), platformSize),
+    };
+    for (int i=0; i<platforms.size(); i++){
+        collisionDetector.addPlatform(platforms[i]);
+    }
+    player.setPosition(startPosition);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -162,16 +189,40 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 player.moveRight(false);
             }
             break;
+        case GLFW_KEY_SPACE:
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.jump();
+                if (Platform::getNewPlatformReady()){
+                    Platform np = Platform(Util::newPoint(platforms.back().position, minH, maxH, minY, maxY, true), platformSize);
+                    platforms.push_back(np);
+                    collisionDetector.addPlatform(np);
+                }
+            }
+            break;
+        case GLFW_KEY_N:
+            resetGame();
+            break;
+        case GLFW_KEY_H:
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                if (player.getSuperSpeedMode()) {
+                    player.setSuperSpeedMode(false);
+                    minH = minH_;
+                    maxH = maxH_;
+                    resetGame();
+                } else {
+                    player.setSuperSpeedMode(true);
+                    minH = minHSuperSpeed;
+                    maxH = maxHSuperSpeed;
+                }
+            }
+            break;
+            
+            
         case GLFW_KEY_Q:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.moveUp(true);
             } else {
                 player.moveUp(false);
-            }
-            break;
-        case GLFW_KEY_SPACE:
-            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.jump();
             }
             break;
         case GLFW_KEY_LEFT_SHIFT:
@@ -213,116 +264,30 @@ glm::mat4 View;
 glm::mat4 Model;
 GLuint programID;
 
-//void sendMVP()
-//{
-//    // Our ModelViewProjection : multiplication of our 3 matrices
-//    glm::mat4 MVP = Projection * View * Model;
-//    // Send our transformation to the currently bound shader,
-//    // in the "MVP" uniform, konstant fuer alle Eckpunkte
-//    glUniformMatrix4fv(glGetUniformLocation(programID, "MVP"), 1, GL_FALSE, &MVP[0][0]);
-//
-//    //Uebung 6    ###################
-//    glUniformMatrix4fv(glGetUniformLocation(programID, "M"), 1, GL_FALSE, &Model[0][0]);
-//    glUniformMatrix4fv(glGetUniformLocation(programID, "V"), 1, GL_FALSE, &View[0][0]);
-//    glUniformMatrix4fv(glGetUniformLocation(programID, "P"), 1, GL_FALSE, &Projection[0][0]);
-//    //#########
-//}
 
-//std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms,int delta){
+//std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms,int minDeltaV,int minDeltaH,int distanceV,int distanceH){
 //    if (num_platforms == 0){
 //        return platforms;
 //    }else {
-//        platforms.push_back(Platform(Util::newPoint(platforms.back().position,0,delta,0,delta, false), platformSize));
-//        return createLevel(num_platforms-1,platforms,delta+2);
+//        platforms.push_back(Platform(Util::newPoint(glm::vec3(0,0,0), minDeltaV,minDeltaV+distanceV,minDeltaH,minDeltaH+distanceH, false ), platformSize));
+//        return createLevel(num_platforms-1,platforms,minDeltaV+distanceV,minDeltaH+distanceH,distanceV,distanceH);
 //    }
 //}
-std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms,int minDeltaV,int minDeltaH,int distanceV,int distanceH){
-    if (num_platforms == 0){
-        return platforms;
-    }else {
-        platforms.push_back(Platform(Util::newPoint(glm::vec3(0,0,0), minDeltaV,minDeltaV+distanceV,minDeltaH,minDeltaH+distanceH, false ), platformSize));
-        return createLevel(num_platforms-1,platforms,minDeltaV+distanceV,minDeltaH+distanceH,distanceV,distanceH);
-    }
-}
+//std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms, float minDistV, float maxDistV, float minDistH, float maxDistH){
+//    if (num_platforms == 0){
+//        return platforms;
+//    } else {
+//        platforms.push_back(Platform(Util::newPoint(platforms.back().position, minDistH , maxDistH, minDistV, maxDistV, false ), platformSize));
+//        std::chrono::nanoseconds t = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(5));
+//        std::this_thread::sleep_for(t);
+//        return createLevel(num_platforms-1, platforms, minDistV, maxDistV, minDistH, maxDistH);
+//    }
+//}
 
-//GLuint loadTexture(const char * imagepath){
-//
-//    printf("Reading image %s\n", imagepath);
-//
-//    // Data read from the header of the BMP file
-//    unsigned char header[54];
-//    unsigned int dataPos;
-//    unsigned int imageSize;
-//    unsigned int width, height;
-//    // Actual RGB data
-//    unsigned char * data;
-//
-//    // Open the file
-//    FILE * file = fopen(imagepath,"rb");
-//    if (!file)                                {printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); return 0;}
-//
-//    // Read the header, i.e. the 54 first bytes
-//
-//    // If less than 54 bytes are read, problem
-//    if ( fread(header, 1, 54, file)!=54 ){
-//        printf("Not a correct BMP file\n");
-//        return 0;
-//    }
-//
-//
-//    // Read the information about the image
-//    dataPos    = *(int*)&(header[0x0A]);
-//    imageSize  = *(int*)&(header[0x22]);
-//    width      = *(int*)&(header[0x12]);
-//    height     = *(int*)&(header[0x16]);
-//
-//    // Some BMP files are misformatted, guess missing information
-//    if (imageSize==0)    imageSize=width*height*3; // 3 : one byte for each Red, Green and Blue component
-//    if (dataPos==0)      dataPos=54; // The BMP header is done that way
-//
-//    // Create a buffer
-//    unsigned char *image = stbi_load(imagepath,
-//                                     &width,
-//                                     &height,
-//                                     &channels,
-//                                     STBI_rgb_alpha);    //good
-//
-//    // Read the actual data from the file into the buffer
-//    fread(data,1,imageSize,file);
-//
-//    // Everything is in memory now, the file wan be closed
-//    fclose (file);
-//
-//    // Create one OpenGL texture
-//    GLuint textureID;
-//    glGenTextures(1, &textureID);
-//
-//    // "Bind" the newly created texture : all future texture functions will modify this texture
-//    glBindTexture(GL_TEXTURE_2D, textureID);
-//
-//    // Give the image to OpenGL
-//    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, image);
-//
-//    // OpenGL has now copied the data. Free our own version
-//    delete [] data;
-//
-//    // Poor filtering, or ...
-//    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-//    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//
-//    // ... nice trilinear filtering.
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-//    glGenerateMipmap(GL_TEXTURE_2D);
-//
-//    // Return the ID of the texture we just created
-//    return textureID;
-//}
 
 int main(void)
 {
+//    std::cout << Util::random(1,5) << std::endl;
 //    glm::vec3 v1(1.0f, 0.0f, 1.0f);
 //    glm::vec3 v2(0.0f, 0.0f, 1.0f);
 //    glm::vec3 v3(1.0f, 0.0f, 0.0f);
@@ -332,33 +297,23 @@ int main(void)
 //    Util::print("normale: ", n);
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    glm::vec3 startPosition = glm::vec3(0,5.2,0);
     
     puppet = Puppet();
     player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
-    player.setPosition(startPosition);
     player.setRelativeBottomPosition(glm::vec3(0,4.5,0));
     
-//    std::vector<Platform> platforms = {
-//        Platform(glm::vec3(0, 0, 0), platformSize)
-//        ,Platform(glm::vec3(10, -4, -8), platformSize),
-//        Platform(glm::vec3(27, -8, -10), platformSize),
-//        Platform(glm::vec3(32, -13, -14), platformSize),
-//        Platform(glm::vec3(39, -17, -9), platformSize),
-//        Platform(glm::vec3(48, -20, -17), platformSize),
-//        Platform(glm::vec3(-8, 5, 8), platformSize),
-//        Platform(Util::newPoint(glm::vec3(0,0,0), 8, 12, 3, 5, false), platformSize)
-//    };
+    resetGame();
 
+//    platforms = createLevel(400, platforms, 1.5, 4, 5, 9);
+
+//    platforms = createLevel(400,platforms, 9, 1.5, 9, 4); //original Steven
     
-    std::vector<Platform> platforms = { Platform(glm::vec3(0, 0, 0), platformSize)};
-    platforms = createLevel(400,platforms, 9, 1.5, 8.5, 4);
+//    platforms = createLevel(400,platforms, 9, 1.5, 10.5, 4);
     
-    for (int i=0; i<platforms.size(); i++){
-        collisionDetector.addPlatform(platforms[i]);
-    }
+//    platforms = createLevel(400,platforms, 9, 1.5, 10, 4); //kind of fine
+    
     
     //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
@@ -453,23 +408,23 @@ int main(void)
     MVP::initialize(programID);
     
 	//#########
-
+    
 	// Shader auch benutzen !
 	glUseProgram(programID);
-
+    
 	//korrekte Ueberlappungsprojektion ermoeglichen
 	glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LESS);
-
-
+    
+    
 //    Obj3D teapot("teapot.obj");
     std::string teapotObj(path+"/teapot.obj");
     const char * teapotPath = teapotObj.c_str();
     Obj3D teapot(teapotPath);
-
+    
 //    glm::vec3 lightPos = glm::vec3(-1, 4, -1);
 //    glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
-
+    
 	//second light
 	if (secondLight) {
 		glm::vec3 lightPos2 = glm::vec3(5, 80, -7);	//x positiv -> links, z negativ -> vorne
@@ -477,7 +432,7 @@ int main(void)
 		//std::cout << "put second light";
 	}
 	//##########
-
+    
 	// Load the texture
     //GLuint Texture = loadBMP_custom("mandrill.bmp");
     GLuint Texture = loadBMP_custom(texture);       //good
@@ -487,7 +442,6 @@ int main(void)
     GLuint Wood3 = loadBMP_custom(wood3);
     GLuint Grass = loadBMP_custom(grass);
     GLuint DeepGrass = loadBMP_custom(deepGrass);   //good
-
     
     
 	// Bind our texture in Texture Unit 0 //multiple textures also possible //put in loop, if textures change
@@ -522,7 +476,7 @@ int main(void)
         // Model matrix : an identity matrix (model will be at the origin)
         
         if (player.position.y < -15) {
-            player.position = startPosition;
+            player.setPosition(startPosition);
         }
         
         glm::vec3 lightPos = player.position + glm::vec3(0,20,0);
@@ -546,11 +500,6 @@ int main(void)
 //            drawSphere(20, 20);
         }
 
-        //        if (Platform::getNewPlatformReady()){
-        //            Platform np(Util::newPoint(glm::vec3(0,0,0), 2, 20, 3, 5, false), platformSize);
-        //            platforms.push_back(np);
-        //            collisionDetector.addPlatform(np);
-        //        }
         
 //        glBindTexture(GL_TEXTURE_2D, IceTexture);
         

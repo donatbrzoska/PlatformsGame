@@ -21,7 +21,7 @@ class Player
     CollisionDetector* collisionDetector;
     glm::vec3 relativeBottomPosition;
     
-    
+    bool superSpeed;
     float stepSize;
     float jumpHeight;
 //    float jumpSpeed;
@@ -114,6 +114,9 @@ public:
     void moveDown(bool mode);
     
     void jump();
+    
+    void setSuperSpeedMode(bool mode);
+    bool getSuperSpeedMode();
     
 //    void move(std::string cmd, bool mode);
     

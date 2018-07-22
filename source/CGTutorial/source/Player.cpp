@@ -1,25 +1,22 @@
 #include "Player.hpp"
 
+static std::mutex _mutex;
+
 Player::Player()
 {
     position = glm::vec3(0, 0, -5);
     relativeBottomPosition = glm::vec3(0, 1.f/5.f, 0);
-    
-    jumpHeight = 8;
     inAir = false;
+    stepSize = 0.02;
     
     lookAtRelative = glm::vec3(0, 0, 1);
     lookAtAbsolute = position + lookAtRelative;
     
-    //THE LOWER THE SLEEP TIME, THE HIGHER THE SPEED
-    moveSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(1));
-    jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(3));
-    
-    stepSize = 0.02;
-    
     horizontalRotation = 90; //looking to the front
     additionalHorizontalRotation = 0;
     verticalRotation = 90;
+    
+    setSuperSpeedMode(false);
 }
 
 void Player::setCamera(Camera* camera) {
@@ -44,6 +41,24 @@ void Player::setRelativeBottomPosition(glm::vec3 position) {
 
 void Player::setStepSize(float stepSize){
     this->stepSize = stepSize;
+}
+
+void Player::setSuperSpeedMode(bool mode){
+    if (mode) {
+        jumpHeight = 16;
+        moveSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::nanoseconds(500000));
+        jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::nanoseconds(2000000));
+        superSpeed = true;
+    } else {
+        jumpHeight = 8;
+        moveSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::nanoseconds(1000000));
+        jumpSleepTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::nanoseconds(3000000));
+        superSpeed = false;
+    }
+}
+
+bool Player::getSuperSpeedMode() {
+    return superSpeed;
 }
 
 glm::vec3 Player::bottomPosition(){
@@ -170,10 +185,12 @@ void Player::jump(){
 }
 
 void Player::checkFall(){
+    std::unique_lock<std::mutex> lock(_mutex);
     if(!inAir) {
         position.y = position.y - 0.05;
         if (!collisionDetector->collision(bottomPosition())){
-            position.y = position.y+0.05;
+            std::cout << "detected need to fall" << std::endl;
+            position.y = position.y + 0.05;
             
 //            glm::vec3 start = position;
 //            int iterations = 30*jumpHeight;
@@ -251,7 +268,7 @@ void Player::moveRightTask(){
 }
 void Player::moveRight(bool mode){
     if (mode==true) {
-        if (!executeMoveRight) {
+        if (!executeMoveRight /*& !executeMoveLeft*/) {
             executeMoveRight=true;
             moveRightThread = std::thread(&Player::moveRightTask, this);
             moveRightThread.detach();
@@ -277,7 +294,7 @@ void Player::moveLeftTask(){
 }
 void Player::moveLeft(bool mode){
     if (mode==true) {
-        if (!executeMoveLeft) {
+        if (!executeMoveLeft /*&!executeMoveRight*/) {
             executeMoveLeft=true;
             moveLeftThread = std::thread(&Player::moveLeftTask, this);
             moveLeftThread.detach();
