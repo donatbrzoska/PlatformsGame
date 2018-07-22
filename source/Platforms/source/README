@@ -1,0 +1,66 @@
+Controls:
+W,A,S,D - Walk
+SPACE - Jump
+
+T - switch between first/third person mode
+
+N - new game
+H - switch speed mode
+J - change platform texture
+
+
+If you want to cheat:
+ENTER - fly up
+RIGHT SHIFT - fly down
+LEFT/RIGHT/UP/DOWN ARROW - move without gravity
+
+
+
+Program process:
+1. Initialize objects like Player, Camera, Puppet, CollisionDetector, ...
+2. Tell player object its camera, collisionDetector, puppet, relativeBottomPosition (for collision detection)
+3. Setup the game through resetGame(), which sets the players position to the beginning, creates some platforms and tells the platforms to the collision detector
+4. Initialize openGL, MVP Class, Mouse Class (for mouse move distance tracking) after creating the glew window, textures, ...
+5. While loop:
+- the view matrix comes from the camera object (which calculates it based on the direction the player is looking and the camera mode)
+- reset player if it fell down
+- bind texture and draw puppet
+- bind texture and draw platforms
+- display everything
+- poll keyboard and mouse events
+
+
+Moving the player process (here forward as an example, others are analogical)
+1. press button (W)
+2. the player is set to move
+3. move forward thread is started
+- thread always checks whether player should still move (if you stop pressing the key, the thread is told to stop)
+- based on where the player looks at, the new player position is calculated
+- animation is invoked on puppet
+- check if the player should fall (because it may not be on a platform anymore) and possibly let it fall
+- update:
+  - where the player looks at (absolute)
+  - based on that and the new position: the camera
+  - based on the new position and the horizontal rotation: the puppet -> this updates all rotations and positions of the puppet parts
+- when the player stops moving it sets the puppet straight
+
+
+Jumping process
+1. press button (Space)
+2. player.jump() is called and a new platform is generated and told to the collision detector
+3. new thread performs the jump process
+- jumping up
+- falling down until there is a collision
+
+
+Collision detection process:
+1. create CollisionDetector object
+2. create Player object and tell it the collision detector
+3. create Platform objects and tell them to the collision detector
+4. everytime the player moves, it asks the collision detector whether there are collisions with it's foot
+
+
+Why so many threads? (the moving threads in particular)
+- the problem is, that if you want to go into two directions simultaniously, glew has problems detecting 2 pressed keys at the same time
+-> this way threads get started once, when the key is pressed and stopped once if when key is released
+- another reason is, that this way a smooth moving animation is made possible that can also be sped up easily
