@@ -2,6 +2,8 @@
 // Include GLFW
 #include <GLFW/glfw3.h>
 
+//keeps track of mouse movements
+//(after telling it its window to observe of course)
 class Mouse
 {
     GLFWwindow* window;

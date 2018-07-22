@@ -7,6 +7,7 @@ static glm::mat4 Projection;
 
 void MVP::initialize(GLuint programID){
     ::programID=programID;
+    // Projection matrix : 45∞ Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units (Es wird alles von 0.1 bis 100 Einheiten angezeigt)
     Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
     Model = glm::mat4(1.f);
 

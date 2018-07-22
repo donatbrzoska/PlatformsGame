@@ -163,7 +163,7 @@ static void createCube()
     );
     
     
-    // Trying normals
+    //normals
     GLuint normalbuffer;
     static const GLfloat g_normal_buffer_data[] = {
         -1.f,  0.f,  0.f,   -1.f,  0.f, 0.f,   -1.f,  0.f,  0.f,

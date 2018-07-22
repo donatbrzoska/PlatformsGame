@@ -2,15 +2,10 @@
 
 bool CollisionDetector::coordinateLaysIn(glm::vec3 co, glm::vec3 from, glm::vec3 to) {
     bool laysIn = false;
-//    Util::print("co: ", co);
-//    Util::print("From :", from);
-//    Util::print("To :", to);
     if (co.x < to.x & co.x > from.x)
         if (co.y < to.y & co.y > from.y)
             if (co.z < to.z & co.z > from.z)
                 laysIn =  true;
-//    Util::print(laysIn);
-//    std::cout << std::endl;
     return laysIn;
 }
 
@@ -22,11 +17,8 @@ bool CollisionDetector::collision(glm::vec3 objectBottomPosition){
 //        }
 //    }
     for (int i=0; i<platforms.size(); i++) {
-//        std::cout << i << std::endl;;
-//        std::cout << "checking platform " << i << std::endl;
         if (coordinateLaysIn(objectBottomPosition, platforms[i].from, platforms[i].to)) {
             collision = true;
-            Platform::setNewPlatformReady(true);
         }
     }
     return collision;
@@ -37,7 +29,6 @@ void CollisionDetector::addPlatform(Platform platform) {
 //    platforms.insert(it, platform);
 //    platforms.insert(platforms.end()++, platform);
     platforms.push_back(platform);
-//    std::cout << "there are/is " << platforms.size() << " Platform(s) now" << std::endl;
 }
 
 void CollisionDetector::reset(){

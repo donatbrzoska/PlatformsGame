@@ -12,7 +12,8 @@ Player::Player()
     lookAtRelative = glm::vec3(0, 0, 1);
     lookAtAbsolute = position + lookAtRelative;
     
-    horizontalRotation = 90; //looking to the front
+     //looking to the front
+    horizontalRotation = 90;
     additionalHorizontalRotation = 0;
     verticalRotation = 90;
     
@@ -87,8 +88,7 @@ void Player::updateAndSleep(std::chrono::nanoseconds t){
     std::this_thread::sleep_for(t);
 }
 
-float function3(float x, float jumpHeight){
-    //    return -0.5*std::pow(x, 2) + jumpHeight;
+float jumpFunction(float x, float jumpHeight){
     return -(jumpHeight/8)*std::pow(x, 2) + jumpHeight;
 }
 
@@ -96,19 +96,8 @@ void Player::jump_up(){
     glm::vec3 start = position;
     int iterations = 30*jumpHeight/2;
     float nst = std::sqrt(jumpHeight/(jumpHeight/8));
-    //    float lastPosition = 0;
     for (int i=0; i<=iterations; i++){
-        //        Util::print(function3(-nst + i*(nst)/iterations, jumpHeight));
-        position.y = start.y + function3(-nst + i*(nst)/iterations, jumpHeight);
-        //        float newPosition = function3(-nst + i*(nst)/iterations, jumpHeight);
-        //        float distance = newPosition - lastPosition;
-        //
-        //        float madeDistance = 0;
-        //        while (!collisionDetector->collision(bottomPosition()) & madeDistance<distance) {
-        //            position.y = position.y+0.01;
-        //            madeDistance = madeDistance+0.01;
-        //        }
-        //        lastPosition = lastPosition+distance;
+        position.y = start.y + jumpFunction(-nst + i*(nst)/iterations, jumpHeight);
         updateAndSleep(jumpSleepTime);
     }
 }
@@ -125,7 +114,7 @@ void Player::jump_fall(){
     int i;
     for (i=0; i<=iterations & !collision & position.y>-20 /*this last condition is for the checkFall call*/; i++){
         //        position.y = start.y + function3(i*(nst)/iterations, jumpHeight);
-        float newRelativePosition = function3(i*(nst)/iterations, jumpHeight);
+        float newRelativePosition = jumpFunction(i*(nst)/iterations, jumpHeight);
         float distanceToDo = lastRelativePosition-newRelativePosition;
         
         float distanceMade = 0;
@@ -136,7 +125,6 @@ void Player::jump_fall(){
             } else {
                 position.y = position.y+0.01;
                 collision = true;
-                Platform::setNewPlatformReady(true);
                 break;
             }
         }
@@ -147,7 +135,7 @@ void Player::jump_fall(){
     //if no collision occurred, the player keeps falling
     if (!collision){
         for (i=i; !collision & position.y > -20; i++){
-            float newRelativePosition = function3(i*(nst)/iterations, jumpHeight);
+            float newRelativePosition = jumpFunction(i*(nst)/iterations, jumpHeight);
             float distanceToDo = lastRelativePosition-newRelativePosition;
             
             float distanceMade = 0;
@@ -158,7 +146,6 @@ void Player::jump_fall(){
                 } else {
                     position.y = position.y+0.01;
                     collision = true;
-                    Platform::setNewPlatformReady(true);
                     break;
                 }
             }
@@ -185,17 +172,13 @@ void Player::jump(){
 }
 
 void Player::checkFall(){
+    //this is required, else too many threads can access this and cause the puppet to sink in the platform
     std::unique_lock<std::mutex> lock(_mutex);
+    
     if(!inAir) {
         position.y = position.y - 0.05;
         if (!collisionDetector->collision(bottomPosition())){
-            std::cout << "detected need to fall" << std::endl;
             position.y = position.y + 0.05;
-            
-//            glm::vec3 start = position;
-//            int iterations = 30*jumpHeight;
-//            float nst = std::sqrt(jumpHeight/(jumpHeight/8));
-//            std::thread f = std::thread(&Player::jump_fall, this, start, nst, iterations/2);
             inAir = true;
             std::thread f = std::thread(&Player::jump_fall, this);
             f.detach();
@@ -207,7 +190,6 @@ void Player::checkFall(){
 
 void Player::moveForwardTask(){
     while(executeMoveForward) {
-//    while(moveMap["forward"]->executeMove) {
         glm::vec3 lookAtRelativeH = glm::vec3(-cos(Util::degreesToRadians(horizontalRotation)), 0, sin(Util::degreesToRadians(horizontalRotation)));
         position += stepSize*lookAtRelativeH;
             
@@ -257,7 +239,6 @@ void Player::moveRightTask(){
         glm::vec3 direction = glm::normalize(glm::cross(lookAtRelative, glm::vec3(0, 1, 0)));
         position += stepSize*direction;
         
-//        puppet->moveRight();
         additionalHorizontalRotation = -45;
         puppet->moveForward();
         checkFall();
@@ -283,7 +264,6 @@ void Player::moveLeftTask(){
         glm::vec3 direction = glm::normalize(glm::cross(glm::vec3(0, 1, 0), lookAtRelative));
         position += stepSize*direction;
         
-//        puppet->moveLeft();
         additionalHorizontalRotation = 45;
         puppet->moveForward();
         checkFall();
@@ -304,48 +284,6 @@ void Player::moveLeft(bool mode){
     }
 }
 
-void Player::moveUpTask(){
-    while(executeMoveUp) {
-        position.y += stepSize;
-        updateAndSleep(moveSleepTime);
-    }
-    puppet->setStraight();
-}
-void Player::moveUp(bool mode){
-    if (mode==true) {
-        if (!executeMoveUp) {
-            executeMoveUp=true;
-            moveUpThread = std::thread(&Player::moveUpTask, this);
-            moveUpThread.detach();
-        }
-    } else {
-        executeMoveUp=false;
-    }
-}
-
-void Player::moveDownTask(){
-    while(executeMoveDown) {
-        position.y -= stepSize;
-        if (collisionDetector->collision(bottomPosition())){
-            position.y +=stepSize;
-            break;
-        }
-        updateAndSleep(moveSleepTime);
-    }
-    puppet->setStraight();
-}
-void Player::moveDown(bool mode){
-    if (mode==true) {
-        if (!executeMoveDown) {
-            executeMoveDown=true;
-            moveDownThread = std::thread(&Player::moveDownTask, this);
-            moveDownThread.detach();
-        }
-    } else {
-        executeMoveDown=false;
-    }
-}
-
 void Player::updateLookAt() {
     //nach https://de.wikipedia.org/wiki/Kugelkoordinaten
     lookAtRelative.x = -sin(Util::degreesToRadians(verticalRotation)) * cos(Util::degreesToRadians(horizontalRotation));
@@ -363,7 +301,141 @@ void Player::updateCamera() {
 
 void Player::updatePuppet() {
     puppet->update(position, horizontalRotation+additionalHorizontalRotation);
-//    Util::print("something happens");
+}
+
+
+
+//SIMPLE METHODS FROM OLD VERSION MAKES US ABLE TO FLY
+
+void Player::moveForwardTask_(){
+    while(executeMoveForward_) {
+        glm::vec3 lookAtRelativeH = glm::vec3(-cos(Util::degreesToRadians(horizontalRotation)), 0, sin(Util::degreesToRadians(horizontalRotation)));
+        position += stepSize*lookAtRelativeH;
+        
+        puppet->moveForward();
+        updateAndSleep(moveSleepTime);
+    }
+    puppet->setStraight();
+}
+void Player::moveForward_(bool mode){
+    if (mode==true) {
+        if (!executeMoveForward_) {
+            executeMoveForward_=true;
+            moveForwardThread_ = std::thread(&Player::moveForwardTask_, this);
+            moveForwardThread_.detach();
+        }
+    } else {
+        executeMoveForward_=false;
+    }
+}
+
+void Player::moveBackwardTask_(){
+    while(executeMoveBackward_) {
+        glm::vec3 lookAtRelativeH = glm::vec3(-cos(Util::degreesToRadians(horizontalRotation)), 0, sin(Util::degreesToRadians(horizontalRotation)));
+        position -= stepSize*lookAtRelativeH;
+        
+        puppet->moveForward();
+        updateAndSleep(moveSleepTime);
+    }
+    puppet->setStraight();
+}
+void Player::moveBackward_(bool mode){
+    if (mode==true) {
+        if (!executeMoveBackward_) {
+            executeMoveBackward_=true;
+            moveBackwardThread_ = std::thread(&Player::moveBackwardTask_, this);
+            moveBackwardThread_.detach();
+        }
+    } else {
+        executeMoveBackward_=false;
+    }
+}
+
+void Player::moveRightTask_(){
+    while(executeMoveRight_) {
+        glm::vec3 direction = glm::normalize(glm::cross(lookAtRelative, glm::vec3(0, 1, 0)));
+        position += stepSize*direction;
+        
+        //        puppet->moveRight();
+        additionalHorizontalRotation = -45;
+        puppet->moveForward();
+        updateAndSleep(moveSleepTime);
+    }
+    puppet->setStraight();
+    additionalHorizontalRotation = 0;
+}
+void Player::moveRight_(bool mode){
+    if (mode==true) {
+        if (!executeMoveRight_ /*& !executeMoveLeft*/) {
+            executeMoveRight_=true;
+            moveRightThread_ = std::thread(&Player::moveRightTask_, this);
+            moveRightThread_.detach();
+        }
+    } else {
+        executeMoveRight_=false;
+    }
+}
+
+void Player::moveLeftTask_(){
+    while(executeMoveLeft_) {
+        glm::vec3 direction = glm::normalize(glm::cross(glm::vec3(0, 1, 0), lookAtRelative));
+        position += stepSize*direction;
+        
+        //        puppet->moveLeft();
+        additionalHorizontalRotation = 45;
+        puppet->moveForward();
+        updateAndSleep(moveSleepTime);
+    }
+    puppet->setStraight();
+    additionalHorizontalRotation = 0;
+}
+void Player::moveLeft_(bool mode){
+    if (mode==true) {
+        if (!executeMoveLeft_ /*&!executeMoveRight*/) {
+            executeMoveLeft_=true;
+            moveLeftThread_ = std::thread(&Player::moveLeftTask_, this);
+            moveLeftThread_.detach();
+        }
+    } else {
+        executeMoveLeft_=false;
+    }
+}
+void Player::moveUpTask_(){
+    while(executeMoveUp_) {
+        position.y += stepSize;
+        updateAndSleep(moveSleepTime);
+    }
+    puppet->setStraight();
+}
+void Player::moveUp_(bool mode){
+    if (mode==true) {
+        if (!executeMoveUp_) {
+            executeMoveUp_=true;
+            moveUpThread_ = std::thread(&Player::moveUpTask_, this);
+            moveUpThread_.detach();
+        }
+    } else {
+        executeMoveUp_=false;
+    }
+}
+
+void Player::moveDownTask_(){
+    while(executeMoveDown_) {
+        position.y -= stepSize;
+        updateAndSleep(moveSleepTime);
+    }
+    puppet->setStraight();
+}
+void Player::moveDown_(bool mode){
+    if (mode==true) {
+        if (!executeMoveDown_) {
+            executeMoveDown_=true;
+            moveDownThread_ = std::thread(&Player::moveDownTask_, this);
+            moveDownThread_.detach();
+        }
+    } else {
+        executeMoveDown_=false;
+    }
 }
 Player::~Player()
 {

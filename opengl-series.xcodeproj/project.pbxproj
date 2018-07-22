@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		68536D7820C55807008E38FE /* CollisionDetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68536D7620C55807008E38FE /* CollisionDetector.cpp */; };
 		68536D7B20C57777008E38FE /* Platform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68536D7920C57777008E38FE /* Platform.cpp */; };
-		6874D7B120C4541B00ED38C3 /* FrameTimer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6874D7B020C4541B00ED38C3 /* FrameTimer.cpp */; };
 		68814FD520C00F6300344D98 /* Mouse.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68814FD320C00F6300344D98 /* Mouse.cpp */; };
 		68814FDA20C026DA00344D98 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68814FD820C026DA00344D98 /* Camera.cpp */; };
 		68814FDD20C02AA400344D98 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68814FDB20C02AA400344D98 /* Player.cpp */; };
@@ -32,13 +31,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		683E867B2105130C00D2E5D4 /* Presentation */ = {isa = PBXFileReference; lastKnownFileType = text; path = Presentation; sourceTree = "<group>"; };
+		683E867D2105137D00D2E5D4 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
 		68536D7520C5328B008E38FE /* Trash */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trash; sourceTree = "<group>"; };
 		68536D7620C55807008E38FE /* CollisionDetector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionDetector.cpp; sourceTree = "<group>"; };
 		68536D7720C55807008E38FE /* CollisionDetector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CollisionDetector.hpp; sourceTree = "<group>"; };
 		68536D7920C57777008E38FE /* Platform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Platform.cpp; sourceTree = "<group>"; };
 		68536D7A20C57777008E38FE /* Platform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Platform.hpp; sourceTree = "<group>"; };
-		6874D7AE20C4535800ED38C3 /* FrameTimer.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = FrameTimer.hpp; sourceTree = "<group>"; };
-		6874D7B020C4541B00ED38C3 /* FrameTimer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FrameTimer.cpp; sourceTree = "<group>"; };
 		68814FD320C00F6300344D98 /* Mouse.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mouse.cpp; sourceTree = "<group>"; };
 		68814FD420C00F6300344D98 /* Mouse.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mouse.hpp; sourceTree = "<group>"; };
 		68814FD620C01E5C00344D98 /* Changes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Changes; sourceTree = "<group>"; };
@@ -143,8 +142,6 @@
 				68814FDC20C02AA400344D98 /* Player.hpp */,
 				68814FE320C08CDF00344D98 /* Util.cpp */,
 				68814FE420C08CDF00344D98 /* Util.hpp */,
-				6874D7B020C4541B00ED38C3 /* FrameTimer.cpp */,
-				6874D7AE20C4535800ED38C3 /* FrameTimer.hpp */,
 				68536D7520C5328B008E38FE /* Trash */,
 				68536D7620C55807008E38FE /* CollisionDetector.cpp */,
 				68536D7720C55807008E38FE /* CollisionDetector.hpp */,
@@ -154,6 +151,8 @@
 				68C0B44E20C87C2100622730 /* Puppet.hpp */,
 				68C0B45020C9754400622730 /* MVP.cpp */,
 				68C0B45120C9754400622730 /* MVP.hpp */,
+				683E867B2105130C00D2E5D4 /* Presentation */,
+				683E867D2105137D00D2E5D4 /* README */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -237,7 +236,6 @@
 				C6B18AF01DB8EA340000F975 /* CGTutorial.cpp in Sources */,
 				68536D7820C55807008E38FE /* CollisionDetector.cpp in Sources */,
 				68C0B45220C9754400622730 /* MVP.cpp in Sources */,
-				6874D7B120C4541B00ED38C3 /* FrameTimer.cpp in Sources */,
 				B9F1A79F1CFED506001A5641 /* objloader.cpp in Sources */,
 				E29C2ADA19FCA22D00A6FCD2 /* platform_osx.mm in Sources */,
 			);

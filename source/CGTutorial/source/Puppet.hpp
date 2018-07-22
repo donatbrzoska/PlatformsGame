@@ -4,17 +4,13 @@
 #include "objects.hpp"
 #include "Util.hpp"
 
+//responsible for keeping track of all variables concerning the puppet and its animation
 class Puppet {
     glm::vec3 position;
     float horizontalRotation;
     
-    
     glm::mat4 Model;
     
-    void drawPart(double h, double s);
-    void drawPart(double h, double s, double b);
-    
-public:
     float alpha;
     float animationend;
     float armwinkel;
@@ -25,9 +21,11 @@ public:
     float jump;
     float z_armwinkel;
     
-//    float x_pos_human;
-//    float y_pos_human;
-//    float z_pos_human;
+    void drawPart(double h, double s);
+    void drawPart(double h, double s, double b);
+    
+public:
+    
     bool inAir;
     
     Puppet();

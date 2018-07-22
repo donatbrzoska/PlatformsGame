@@ -2,14 +2,11 @@
 //vec n
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
-//using namespace glm;
-
 
 #include <math.h>
 #include "Util.hpp"
 
-//using namespace std;
-
+//keeps track of where to look
 class Camera
 {
     bool thirdPerson;

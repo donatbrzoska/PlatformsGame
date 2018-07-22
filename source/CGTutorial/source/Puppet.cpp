@@ -1,7 +1,5 @@
 #include "Puppet.hpp"
 
-//static glm::mat4 Model = glm::mat4(1.0f);
-
 Puppet::Puppet() {
     alpha = 180.0f;
     animationend = 150.0f;
@@ -12,13 +10,8 @@ Puppet::Puppet() {
     speed2 = speed;
     jump = 0.0f;
     z_armwinkel = 0.0f;
- 
-    //x_pos_human = 0.0f;
-//    y_pos_human = 0.0f;
-//    z_pos_human = 0.0f;
-    inAir = false;
     
-//    Model = glm::mat4(1.0f);
+    inAir = false;
 }
 
 void Puppet::setStraight() {
@@ -33,7 +26,6 @@ void Puppet::setStraight() {
 
 
 void Puppet::moveForward(){
-//    position.z += 0.2;
     z_armwinkel = 0;
     if (i == animationend) {
         speed *= -1;
@@ -59,7 +51,6 @@ void Puppet::moveBackward(){
     if (armwinkel == 0) {
         speed2 *= -1;
     }
-//    position.z -= 0.2;
     armwinkel += speed2;
     beta -= speed;
     alpha += speed;
@@ -67,7 +58,6 @@ void Puppet::moveBackward(){
 }
 
 void Puppet::moveLeft(){
-//    position.x -= 0.2;
     if (i == animationend) {
         speed *= -1;
         i = -animationend;
@@ -84,7 +74,6 @@ void Puppet::moveRight(){
         speed *= -1;
         i = -animationend;
     }
-//    position.x += 0.2;
     armwinkel += speed/2;
     z_armwinkel += speed / 2;
     beta -= speed;
@@ -93,9 +82,6 @@ void Puppet::moveRight(){
 }
 
 void Puppet::setInAirMode(bool mode) {
-//    if (inair == false) {
-//        inair = true;
-//    }
     inAir = mode;
 }
 
@@ -129,28 +115,13 @@ void Puppet::drawPuppet(){
     double fall = 0.001;
     double jumpwinkel = 0.0f;
     
-    //PUPPET
-//    Model = Util::custom_rotate(glm::mat4(1.f), horizontalRotation, yVector);//(glm::mat4(1.0f));
-    
-//    Model = Util::custom_rotate(glm::mat4(1.f), horizontalRotation, yVector);
     Model = glm::mat4(1.f);
     glm::mat4 Save = Model;
     
     
-//    Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-//    MVP::setModel(Model);
-//    drawSphere(10,10);
-//    Model = Save;
-    
-//    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
-    
     Model = glm::translate(Model, position);
     Model = Util::custom_rotate(Model, horizontalRotation, yVector);
     Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-//    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z)
-    
-    
-//    Util::drawCS(Model);
     
     
     //jumping
@@ -160,15 +131,6 @@ void Puppet::drawPuppet(){
 //        /*puppet.*/inair = false;
         jumpwinkel = 180;
     }
-//
-//    if (/*puppet.*/position.y <= 0) {
-//        fall = 0;
-//        jumpwinkel = 0;
-//    }
-//    if (/*puppet.*/position.y >= 0) {
-//        fall = 0.001;
-//    }
-//    /*puppet.*/position.y -= fall;
     
     //drawing human
     double length = 2.0;
@@ -243,22 +205,12 @@ void Puppet::drawPuppet(){
     drawPart(ancle, ancle / 2, gap);
     
     
-//    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-//    Model = Util::custom_rotate(Model, /*puppet.*/alpha, glm::vec3(1.0, 0.0, 0.0));
-//    Model = Util::custom_rotate(Model, /*puppet.*/z_armwinkel, glm::vec3(0.0, 0.0, 1.0));
-    //    sendMVP();
-    //    MVP::setModel(Model);
-    
-    
-    
     
     
     Model = Save;
-//    Model = Util::custom_rotate(Model, horizontalRotation, yVector);
     Model = glm::translate(Model, position);
     Model = Util::custom_rotate(Model, horizontalRotation, yVector);
     Model = glm::scale(Model, glm::vec3(0.5, 0.5, 0.5));
-//    Model = glm::translate(Model, glm::vec3(/*puppet.*/position.x, /*puppet.*/position.y, /*puppet.*/position.z));
     
     //left arm
     gap = -0.6;
@@ -304,18 +256,11 @@ void Puppet::drawPuppet(){
     Model = glm::translate(Model, glm::vec3(0.0, length, 0.0));
     
     drawPart(ancle, ancle / 2, gap);
-    
-    
-//    Model = glm::translate(Model, glm::vec3(0.0, ancle, 0.0));
-//    Model = Util::custom_rotate(Model, /*puppet.*/beta, glm::vec3(1.0, 0.0, 0.0));
-//    //    sendMVP();
-//    MVP::setModel(Model);
 }
 
 void Puppet::update(glm::vec3 position, float horizontalRotation) {
     this->position = position;
     this->horizontalRotation = horizontalRotation-90;
-//    Util::print(this->horizontalRotation);
 }
 
 Puppet::~Puppet(){

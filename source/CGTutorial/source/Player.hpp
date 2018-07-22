@@ -7,13 +7,14 @@
 #include "Puppet.hpp"
 #include "Platform.hpp"
 
-//#include <math.h>
-
 #include <thread>
 #include <math.h>
 #include <chrono>
-//#include <map>
 
+//keeps track of all data concerning the player (position, speed, speedMode, ...)
+//invokes puppet to animate
+//invokes updates on camera
+//moves player
 class Player
 {
     Camera* camera;
@@ -24,7 +25,6 @@ class Player
     bool superSpeed;
     float stepSize;
     float jumpHeight;
-//    float jumpSpeed;
     bool inAir;
     
     float horizontalRotation;
@@ -38,16 +38,6 @@ class Player
     std::chrono::nanoseconds jumpSleepTime;
     
     void updateAndSleep(std::chrono::nanoseconds t);
-    
-//    typedef void (Player::*moveOperation)();
-    
-//    struct move {
-//        std::thread moveThread;
-//        bool executeMove;
-//        moveOperation task;
-//    };
-//
-//    std::map<std::string, move*> moveMap;
     
     std::thread moveForwardThread;
     bool executeMoveForward;
@@ -65,15 +55,6 @@ class Player
     bool executeMoveLeft;
     void moveLeftTask();
     
-    std::thread moveUpThread;
-    bool executeMoveUp;
-    void moveUpTask();
-    
-    std::thread moveDownThread;
-    bool executeMoveDown;
-    void moveDownTask();
-    
-    
     void checkFall();
     
     std::thread jumpThread;
@@ -81,21 +62,44 @@ class Player
     void jump_up();
     void jumpTask();
     
-//    std::thread fallThread;
-//    void fallTask();
-//    void fall();
-    
     glm::vec3 bottomPosition();
     void updateLookAt();
     void updateCamera();
     void updatePuppet();
     void updatePuppet(float a);
     
+    
+    
+    //SIMPLE METHODS FROM OLD VERSION MAKES US ABLE TO FLY
+    std::thread moveForwardThread_;
+    bool executeMoveForward_;
+    void moveForwardTask_();
+    
+    std::thread moveBackwardThread_;
+    bool executeMoveBackward_;
+    void moveBackwardTask_();
+    
+    std::thread moveRightThread_;
+    bool executeMoveRight_;
+    void moveRightTask_();
+    
+    std::thread moveLeftThread_;
+    bool executeMoveLeft_;
+    void moveLeftTask_();
+    
+    std::thread moveUpThread_;
+    bool executeMoveUp_;
+    void moveUpTask_();
+    
+    std::thread moveDownThread_;
+    bool executeMoveDown_;
+    void moveDownTask_();
+    
+    
 public:
     glm::vec3 position;
     
     Player();
-//    void initialize();
     void setCamera(Camera* camera);
     void setPuppet(Puppet* puppet);
     void setCollisionDetector(CollisionDetector* collisionDetector);
@@ -110,15 +114,19 @@ public:
     void moveBackward(bool mode);
     void moveRight(bool mode);
     void moveLeft(bool mode);
-    void moveUp(bool mode);
-    void moveDown(bool mode);
     
     void jump();
     
     void setSuperSpeedMode(bool mode);
     bool getSuperSpeedMode();
     
-//    void move(std::string cmd, bool mode);
     
+    
+    void moveForward_(bool mode);
+    void moveBackward_(bool mode);
+    void moveRight_(bool mode);
+    void moveLeft_(bool mode);
+    void moveUp_(bool mode);
+    void moveDown_(bool mode);
     ~Player();
 };

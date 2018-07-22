@@ -118,17 +118,21 @@ const char * iceTexture = iceTextureImage.c_str();
 std::string woods1(path+"/wood1.bmp");
 const char * wood1 = woods1.c_str();
 
-std::string woods2(path+"/wood2.bmp");
-const char * wood2 = woods2.c_str();
-
-std::string woods3(path+"/wood3.bmp");
-const char * wood3 = woods3.c_str();
-
-std::string grasss(path+"/grass.bmp");
-const char * grass = grasss.c_str();
+//std::string woods2(path+"/wood2.bmp");
+//const char * wood2 = woods2.c_str();
 
 std::string deepgrass(path+"/deepGrass.bmp");
 const char * deepGrass = deepgrass.c_str();
+
+std::vector<GLuint> textureLibrary;
+int activeTexture = 1;
+
+void changeTexture(){
+    activeTexture++;
+    if (activeTexture == textureLibrary.size()){
+        activeTexture=0;
+    }
+}
 
 void error_callback(int error, const char* description)
 {
@@ -140,7 +144,7 @@ void resetGame(){
     platforms = {
         Platform(glm::vec3(0, -5, -20), glm::vec3(15, 0.8, 15)),
         Platform(glm::vec3(0, 0, 0), platformSize),
-        Platform(glm::vec3(9, 3, 12), platformSize),
+        Platform(Util::newPoint(glm::vec3(0,0,0), minH, maxH, minY, maxY, true), platformSize)
     };
     for (int i=0; i<platforms.size(); i++){
         collisionDetector.addPlatform(platforms[i]);
@@ -162,10 +166,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         case GLFW_KEY_W:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.moveForward(true);
-                //                player.move("forward", true);
             } else {
                 player.moveForward(false);
-//                player.move("forward", false);
             }
             break;
         case GLFW_KEY_A:
@@ -192,11 +194,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         case GLFW_KEY_SPACE:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 player.jump();
-                if (Platform::getNewPlatformReady()){
-                    Platform np = Platform(Util::newPoint(platforms.back().position, minH, maxH, minY, maxY, true), platformSize);
-                    platforms.push_back(np);
-                    collisionDetector.addPlatform(np);
-                }
+                Platform np = Platform(Util::newPoint(platforms.back().position, minH, maxH, minY, maxY, true), platformSize);
+                platforms.push_back(np);
+                collisionDetector.addPlatform(np);
             }
             break;
         case GLFW_KEY_N:
@@ -213,36 +213,58 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                     player.setSuperSpeedMode(true);
                     minH = minHSuperSpeed;
                     maxH = maxHSuperSpeed;
+                    resetGame();
                 }
             }
             break;
-            
-            
-        case GLFW_KEY_Q:
+        case GLFW_KEY_J:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveUp(true);
-            } else {
-                player.moveUp(false);
+                changeTexture();
             }
             break;
-        case GLFW_KEY_LEFT_SHIFT:
+            
+            
+        case GLFW_KEY_ENTER:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveDown(true);
+                player.moveUp_(true);
             } else {
-                player.moveDown(false);
+                player.moveUp_(false);
+            }
+            break;
+        case GLFW_KEY_RIGHT_SHIFT:
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.moveDown_(true);
+            } else {
+                player.moveDown_(false);
+            }
+            break;
+        case GLFW_KEY_LEFT:
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.moveLeft_(true);
+            } else {
+                player.moveLeft_(false);
+            }
+            break;
+        case GLFW_KEY_RIGHT:
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.moveRight_(true);
+            } else {
+                player.moveRight_(false);
             }
             break;
         case GLFW_KEY_UP:
-            puppet.moveForward();
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.moveForward_(true);
+            } else {
+                player.moveForward_(false);
+            }
             break;
         case GLFW_KEY_DOWN:
-            puppet.moveBackward();
-            break;
-        case GLFW_KEY_LEFT:
-            puppet.moveLeft();
-            break;
-        case GLFW_KEY_RIGHT:
-            puppet.moveRight();
+            if (action==GLFW_PRESS | action==GLFW_REPEAT) {
+                player.moveBackward_(true);
+            } else {
+                player.moveBackward_(false);
+            }
             break;
         default:
             break;
@@ -265,62 +287,17 @@ glm::mat4 Model;
 GLuint programID;
 
 
-//std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms,int minDeltaV,int minDeltaH,int distanceV,int distanceH){
-//    if (num_platforms == 0){
-//        return platforms;
-//    }else {
-//        platforms.push_back(Platform(Util::newPoint(glm::vec3(0,0,0), minDeltaV,minDeltaV+distanceV,minDeltaH,minDeltaH+distanceH, false ), platformSize));
-//        return createLevel(num_platforms-1,platforms,minDeltaV+distanceV,minDeltaH+distanceH,distanceV,distanceH);
-//    }
-//}
-//std::vector<Platform> createLevel(int num_platforms, std::vector<Platform> platforms, float minDistV, float maxDistV, float minDistH, float maxDistH){
-//    if (num_platforms == 0){
-//        return platforms;
-//    } else {
-//        platforms.push_back(Platform(Util::newPoint(platforms.back().position, minDistH , maxDistH, minDistV, maxDistV, false ), platformSize));
-//        std::chrono::nanoseconds t = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::milliseconds(5));
-//        std::this_thread::sleep_for(t);
-//        return createLevel(num_platforms-1, platforms, minDistV, maxDistV, minDistH, maxDistH);
-//    }
-//}
-
-
 int main(void)
 {
-//    std::cout << Util::random(1,5) << std::endl;
-//    glm::vec3 v1(1.0f, 0.0f, 1.0f);
-//    glm::vec3 v2(0.0f, 0.0f, 1.0f);
-//    glm::vec3 v3(1.0f, 0.0f, 0.0f);
-//    glm::vec3 n1 = v2-v1;
-//    glm::vec3 n2 = v3-v1;
-//    glm::vec3 n = glm::cross(n1, n2);
-//    Util::print("normale: ", n);
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
-    
     puppet = Puppet();
     player.setPuppet(&puppet);
     player.setCamera(&camera);
     player.setCollisionDetector(&collisionDetector);
     player.setRelativeBottomPosition(glm::vec3(0,4.5,0));
     
+    //resets collision detector, sets player position, creates first platforms and tells them to the collision detector
     resetGame();
 
-//    platforms = createLevel(400, platforms, 1.5, 4, 5, 9);
-
-//    platforms = createLevel(400,platforms, 9, 1.5, 9, 4); //original Steven
-    
-//    platforms = createLevel(400,platforms, 9, 1.5, 10.5, 4);
-    
-//    platforms = createLevel(400,platforms, 9, 1.5, 10, 4); //kind of fine
-    
-    
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    
-//    player.initialize();
-//    player.setStepSize(playerStepSize);
-//    FrameTimer::initialize(FPS);
-    
 	// Initialise GLFW-Bibliothek (kann unter anderem Fenster oeffnen)
 	if (!glfwInit())
 	{
@@ -333,7 +310,7 @@ int main(void)
 	glfwSetErrorCallback(error_callback);
 
     
-    // Die folgenden vier Zeilen sind nštig auf dem Mac ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    // Die folgenden vier Zeilen sind nštig auf dem Mac MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC
     // Au§erdem mŸssen die zu ladenden Dateien bei der aktuellen Projektkonfiguration
     // unter DerivedData/Build/Products/Debug (oder dann Release) zu finden sein
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -350,7 +327,8 @@ int main(void)
 		NULL,  // windowed mode
 		NULL); // shared window
     
-    mouse.setWindow(window); //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //tell the window to the mouse
+    mouse.setWindow(window);
     
     
 //Fensterpointer == null -> terminieren
@@ -374,7 +352,7 @@ int main(void)
 		return -1;
 	}
 
-	//BIS HIER OPEN GL VORBEREITUNG
+	//OPEN GL SETUP UNTIL HERE
 
 
 	// Auf Keyboard-Events reagieren
@@ -385,14 +363,8 @@ int main(void)
 	// Dark blue background
 	// red, green, blue, intensity -> 1 is intense
 	// Lediglich Definition der Loeschfarbe
-	//glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
-	// Create and compile our GLSL program from the shaders
-	//original ##########
-	//programID = LoadShaders("TransformVertexShader.vertexshader", "ColorFragmentShader.fragmentshader");
-	//############
-	//Uebung 6 ######################
 
 	//CUSTOM
 	if (!secondLight) {
@@ -400,14 +372,11 @@ int main(void)
 	}
 	else {
 		programID = LoadShaders(vertexShaderWithSecondLight, fragmentShaderWithSecondLight);
-		//std::cout << "second Shader loaded";
 	}
-	//
 
-    //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    //tell the programID to the external MVP Class
     MVP::initialize(programID);
     
-	//#########
     
 	// Shader auch benutzen !
 	glUseProgram(programID);
@@ -422,39 +391,29 @@ int main(void)
     const char * teapotPath = teapotObj.c_str();
     Obj3D teapot(teapotPath);
     
-//    glm::vec3 lightPos = glm::vec3(-1, 4, -1);
-//    glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
-    
 	//second light
 	if (secondLight) {
 		glm::vec3 lightPos2 = glm::vec3(5, 80, -7);	//x positiv -> links, z negativ -> vorne
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace2"), lightPos2.x, lightPos2.y, lightPos2.z);
 		//std::cout << "put second light";
 	}
-	//##########
     
 	// Load the texture
-    //GLuint Texture = loadBMP_custom("mandrill.bmp");
     GLuint Texture = loadBMP_custom(texture);       //good
     GLuint IceTexture = loadBMP_custom(iceTexture);     //good
     GLuint Wood1 = loadBMP_custom(wood1);           //good
-    GLuint Wood2 = loadBMP_custom(wood2);
-    GLuint Wood3 = loadBMP_custom(wood3);
-    GLuint Grass = loadBMP_custom(grass);
+//    GLuint Wood2 = loadBMP_custom(wood2);           //good
     GLuint DeepGrass = loadBMP_custom(deepGrass);   //good
+    
+    textureLibrary = {Texture, IceTexture, Wood1, DeepGrass};
     
     
 	// Bind our texture in Texture Unit 0 //multiple textures also possible //put in loop, if textures change
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Texture);
+//    glBindTexture(GL_TEXTURE_2D, Texture);
 
 	// Set our "myTextureSampler" sampler to user Texture Unit 0
 	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
-
-    
-    
-    //PUPPET ############################
-    // Eventloop
     
     
     player.moveForward(true);
@@ -463,22 +422,20 @@ int main(void)
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
 	{
-//        if (FrameTimer::newFrame()) {
         
-			// Clear the screen | Ueberlappungsprojektion++
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
-
-			// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units (Es wird alles von 0.1 bis 100 Einheiten angezeigt)
-//            Projection = glm::perspective(45.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+	    // Clear the screen | Ueberlappungsprojektion++
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-            View = glm::lookAt(camera.position, camera.lookAtAbsolute, glm::vec3(0,1,0));
+        View = glm::lookAt(camera.position, camera.lookAtAbsolute, glm::vec3(0,1,0));
+        //tell the view to the external MVP Class
         MVP::setView(View);
-        // Model matrix : an identity matrix (model will be at the origin)
         
+        //reset player position if he falls in void
         if (player.position.y < -15) {
             player.setPosition(startPosition);
         }
         
+        //light follows the player
         glm::vec3 lightPos = player.position + glm::vec3(0,20,0);
         glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
         
@@ -486,11 +443,11 @@ int main(void)
         
         
         glBindTexture(GL_TEXTURE_2D, Wood1);
-//        glBindTexture(GL_TEXTURE_2D, *image);
+//        glBindTexture(GL_TEXTURE_2D, Wood2);
         
+        //draw puppet only if third person mode is enabled
         if(camera.getThirdPersonMode()){
             puppet.drawPuppet();
-            
             
             //"SPHERE-Player"
 //            Model = Save;
@@ -502,7 +459,10 @@ int main(void)
 
         
 //        glBindTexture(GL_TEXTURE_2D, IceTexture);
+//        glBindTexture(GL_TEXTURE_2D, DeepGrass);
+        glBindTexture(GL_TEXTURE_2D, textureLibrary[activeTexture]);
         
+        //draw platforms
         for (int i=0; i<platforms.size(); i++){
             platforms[i].draw();
         }
@@ -525,13 +485,10 @@ int main(void)
 
         // Swap buffers -> Bild anzeigen
         glfwSwapBuffers(window);
-		//}
+        
 		// Poll for and process events -> Aufruf der entsprechenden callback Funktionen
         glfwPollEvents();
         processMouseMove();
-//        }
-//        std::chrono::nanoseconds ns(42000000L);
-//        std::this_thread::sleep_for(ns);
 	}
 
 	glDeleteProgram(programID);
@@ -543,10 +500,3 @@ int main(void)
 	glfwTerminate();
 	return 0;
 }
-
-/*
-7
-1.5 
-2.5
-2
-*/

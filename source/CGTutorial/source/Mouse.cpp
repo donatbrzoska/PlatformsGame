@@ -8,17 +8,11 @@ Mouse::Mouse()
 
 double Mouse::getDifferenceX(){
     update();
-    //if (oldPosX != 0)   //first call will not calculate difference of 0 and position
-        return oldPosX-posX;
-    //else
-    //    return posX;
+     return oldPosX-posX;
 }
 
 double Mouse::getDifferenceY(){
-    //if (oldPosY != 0)
-        return oldPosY-posY;
-    //else
-    //    return posY;
+    return oldPosY-posY;
 }
 
 void Mouse::setWindow(GLFWwindow *window) {
@@ -30,7 +24,6 @@ void Mouse::update(){
     oldPosX = posX;
     oldPosY = posY;
     glfwGetCursorPos(window, &posX, &posY);
-    //std::cout << "posx: " << posX << " posy: " << posY << std::endl;
 }
 
 Mouse::~Mouse()
