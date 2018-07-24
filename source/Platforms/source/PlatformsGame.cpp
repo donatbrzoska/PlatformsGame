@@ -24,8 +24,6 @@ using namespace glm;
 
 #include "objloader.hpp"
 
-#include "texture.hpp"
-
 #include <iostream>
 #include "Obj3D.h"
 
@@ -38,26 +36,8 @@ bool secondLight = false;
 //const char * vertexShaderWithSecondLight = "StandardShadingWithSecondLight.vertexshader";
 //const char * fragmentShaderWithSecondLight = "StandardShadingWithSecondLight.fragmentshader";
 
-
-//CHANGE THIS PATH RIGHT HERE TO YOUR PROJECT DIRECTORY PATH
-std::string workingDirectory = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CurrentVersion";
-
-std::string resourceDirectory = "/source/Platforms/resources";
-std::string path = workingDirectory+resourceDirectory;
-
-std::string vertShader(path + "/StandardShading.vertexshader");
-const char * vertexShader = vertShader.c_str();
-
-std::string fragShader(path + "/StandardShading.fragmentshader");
-const char * fragmentShader = fragShader.c_str();
-
-
-std::string vertShaderWSL(path + "/StandardShadingWithSecondLight.vertexshader");
-const char * vertexShaderWithSecondLight = vertShaderWSL.c_str();
-
-std::string fragShaderWSL(path + "/StandardShadingWithSecondLight.fragmentshader");
-const char * fragmentShaderWithSecondLight = fragShaderWSL.c_str();
-
+#include "Resources.hpp"
+Resources resources;
 
 #include "Puppet.hpp"
 Puppet puppet;
@@ -79,10 +59,6 @@ Mouse mouse = Mouse();
 
 #include "MVP.hpp"
 
-//#include "FrameTimer.hpp"
-#include <chrono>
-int FPS = 30;
-
 #include <vector>
 
 #include <thread>
@@ -102,34 +78,11 @@ float maxY = 6;
 float minHSuperSpeed = 18;
 float maxHSuperSpeed = 29.5;
 
-
-//const char * texture = "purple_texture.bmp";
-
-//std::string textures(path+"/purple_texture.bmp");
-std::string textures(path+"/purple_texture.bmp");
-const char * texture = textures.c_str();
-
-std::string iceTextureImage(path+"/ice.bmp");
-const char * iceTexture = iceTextureImage.c_str();
-
-std::string iceTextureImage2(path+"/ice2.bmp");
-const char * iceTexture2 = iceTextureImage2.c_str();
-
-std::string woods1(path+"/wood1.bmp");
-const char * wood1 = woods1.c_str();
-
-//std::string woods2(path+"/wood2.bmp");
-//const char * wood2 = woods2.c_str();
-
-std::string deepgrass(path+"/deepGrass.bmp");
-const char * deepGrass = deepgrass.c_str();
-
-std::vector<GLuint> textureLibrary;
 int activeTexture = 2;
 
 void changeTexture(){
     activeTexture++;
-    if (activeTexture == textureLibrary.size()){
+    if (activeTexture == resources.textureLibrary.size()){
         activeTexture=0;
     }
 }
@@ -286,7 +239,6 @@ glm::mat4 View;
 glm::mat4 Model;
 GLuint programID;
 
-
 int main(void)
 {
     puppet = Puppet();
@@ -365,13 +317,22 @@ int main(void)
 	// Lediglich Definition der Loeschfarbe
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
+    
+    // Bind our texture in Texture Unit 0 //multiple textures also possible //put in loop, if textures change
+    glActiveTexture(GL_TEXTURE0);
+    //    glBindTexture(GL_TEXTURE_2D, Texture);
+    
+    // Set our "myTextureSampler" sampler to user Texture Unit 0
+    glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
 
+    resources.initialize();
+    
 	//CUSTOM
 	if (!secondLight) {
-		programID = LoadShaders(vertexShader, fragmentShader);
+		programID = LoadShaders(resources.vertexShader, resources.fragmentShader);
 	}
 	else {
-		programID = LoadShaders(vertexShaderWithSecondLight, fragmentShaderWithSecondLight);
+		programID = LoadShaders(resources.vertexShaderWithSecondLight, resources.fragmentShaderWithSecondLight);
 	}
 
     //tell the programID to the external MVP Class
@@ -387,7 +348,7 @@ int main(void)
     
     
 //    Obj3D teapot("teapot.obj");
-    std::string teapotObj(path+"/teapot.obj");
+    std::string teapotObj(resources.path+"/teapot.obj");
     const char * teapotPath = teapotObj.c_str();
     Obj3D teapot(teapotPath);
     
@@ -397,24 +358,6 @@ int main(void)
 		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace2"), lightPos2.x, lightPos2.y, lightPos2.z);
 		//std::cout << "put second light";
 	}
-    
-	// Load the texture
-    GLuint Texture = loadBMP_custom(texture);       //good
-    GLuint IceTexture = loadBMP_custom(iceTexture);     //good
-    GLuint IceTexture2 = loadBMP_custom(iceTexture2);     //good
-    GLuint Wood1 = loadBMP_custom(wood1);           //good
-//    GLuint Wood2 = loadBMP_custom(wood2);           //good
-    GLuint DeepGrass = loadBMP_custom(deepGrass);   //good
-    
-    textureLibrary = {Texture, IceTexture, IceTexture2, Wood1, DeepGrass};
-    
-    
-	// Bind our texture in Texture Unit 0 //multiple textures also possible //put in loop, if textures change
-    glActiveTexture(GL_TEXTURE0);
-//    glBindTexture(GL_TEXTURE_2D, Texture);
-
-	// Set our "myTextureSampler" sampler to user Texture Unit 0
-	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
     
     
     player.moveForward(true);
@@ -443,7 +386,7 @@ int main(void)
 //        glm::mat4 Save = glm::mat4(1.f);
         
         
-        glBindTexture(GL_TEXTURE_2D, Wood1);
+        glBindTexture(GL_TEXTURE_2D, resources.textureLibrary[3]);
 //        glBindTexture(GL_TEXTURE_2D, Wood2);
         
         //draw puppet only if third person mode is enabled
@@ -461,7 +404,7 @@ int main(void)
         
 //        glBindTexture(GL_TEXTURE_2D, IceTexture);
 //        glBindTexture(GL_TEXTURE_2D, DeepGrass);
-        glBindTexture(GL_TEXTURE_2D, textureLibrary[activeTexture]);
+        glBindTexture(GL_TEXTURE_2D, resources.textureLibrary[activeTexture]);
         
         //draw platforms
         for (int i=0; i<platforms.size(); i++){
@@ -495,7 +438,9 @@ int main(void)
 	glDeleteProgram(programID);
 
 	//Texturen aus Speicher loeschen
-	glDeleteTextures(1, &Texture);
+    for (int i=0; i<resources.textureLibrary.size(); i++){
+        glDeleteTextures(1, &resources.textureLibrary[i]);
+    }
 
 	// Close OpenGL window and terminate GLFW
 	glfwTerminate();

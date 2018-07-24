@@ -14,6 +14,8 @@
 		68814FDD20C02AA400344D98 /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68814FDB20C02AA400344D98 /* Player.cpp */; };
 		68814FE520C08CDF00344D98 /* Util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68814FE320C08CDF00344D98 /* Util.cpp */; };
 		688D7B7C20BDAAC5006AFACC /* Obj3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 688D7B7B20BDAAC5006AFACC /* Obj3D.cpp */; };
+		6897E6DE21072F64003D0849 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6897E6DC21072F64003D0849 /* Game.cpp */; };
+		6897E6E421073272003D0849 /* Resources.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6897E6E221073272003D0849 /* Resources.cpp */; };
 		68C0B44F20C87C2100622730 /* Puppet.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68C0B44D20C87C2100622730 /* Puppet.cpp */; };
 		68C0B45220C9754400622730 /* MVP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 68C0B45020C9754400622730 /* MVP.cpp */; };
 		B9F1A79E1CFED506001A5641 /* objects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B9F1A7951CFED506001A5641 /* objects.cpp */; };
@@ -50,6 +52,10 @@
 		68814FE420C08CDF00344D98 /* Util.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Util.hpp; sourceTree = "<group>"; };
 		688D7B7A20BDAAC5006AFACC /* Obj3D.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Obj3D.h; sourceTree = "<group>"; };
 		688D7B7B20BDAAC5006AFACC /* Obj3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Obj3D.cpp; sourceTree = "<group>"; };
+		6897E6DC21072F64003D0849 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
+		6897E6DD21072F64003D0849 /* Game.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Game.hpp; sourceTree = "<group>"; };
+		6897E6E221073272003D0849 /* Resources.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Resources.cpp; sourceTree = "<group>"; };
+		6897E6E321073272003D0849 /* Resources.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Resources.hpp; sourceTree = "<group>"; };
 		68C0B44D20C87C2100622730 /* Puppet.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Puppet.cpp; sourceTree = "<group>"; };
 		68C0B44E20C87C2100622730 /* Puppet.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Puppet.hpp; sourceTree = "<group>"; };
 		68C0B45020C9754400622730 /* MVP.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MVP.cpp; sourceTree = "<group>"; };
@@ -132,6 +138,8 @@
 				B9F1A79A1CFED506001A5641 /* shader.hpp */,
 				B9F1A79B1CFED506001A5641 /* texture.cpp */,
 				B9F1A79C1CFED506001A5641 /* texture.hpp */,
+				6897E6E221073272003D0849 /* Resources.cpp */,
+				6897E6E321073272003D0849 /* Resources.hpp */,
 				68814FD320C00F6300344D98 /* Mouse.cpp */,
 				68814FD420C00F6300344D98 /* Mouse.hpp */,
 				68814FD620C01E5C00344D98 /* Changes */,
@@ -153,6 +161,8 @@
 				68C0B45120C9754400622730 /* MVP.hpp */,
 				683E867B2105130C00D2E5D4 /* Presentation */,
 				683E867D2105137D00D2E5D4 /* README */,
+				6897E6DC21072F64003D0849 /* Game.cpp */,
+				6897E6DD21072F64003D0849 /* Game.hpp */,
 			);
 			path = source;
 			sourceTree = "<group>";
@@ -224,6 +234,8 @@
 			files = (
 				B9F1A7A01CFED506001A5641 /* shader.cpp in Sources */,
 				68814FD520C00F6300344D98 /* Mouse.cpp in Sources */,
+				6897E6DE21072F64003D0849 /* Game.cpp in Sources */,
+				6897E6E421073272003D0849 /* Resources.cpp in Sources */,
 				E29C2ACA19FCA1C400A6FCD2 /* glew.c in Sources */,
 				B9F1A79E1CFED506001A5641 /* objects.cpp in Sources */,
 				68536D7B20C57777008E38FE /* Platform.cpp in Sources */,
