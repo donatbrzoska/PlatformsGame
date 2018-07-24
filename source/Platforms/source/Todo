@@ -1,8 +1,9 @@
 #todo
-Windows Version?
-Lichtposition, zweites Licht?
 Game Class
+Collision Detector nur Referenz auf Platformen geben
+Lichtposition, zweites Licht?
 
+Windows Version
 
 
 Collision Detection von der Seite
@@ -39,7 +40,6 @@ delete(camera);?
 - Move left/right hängt von verticalRotation ab
 - Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft
 - Texturkoordinaten
-
 
 
 
