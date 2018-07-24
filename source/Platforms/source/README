@@ -2,11 +2,11 @@ Controls:
 W,A,S,D - Walk
 SPACE - Jump
 
-T - switch between first/third person mode
+C - switch between first/third person mode
 
 N - new game
 H - switch speed mode
-J - change platform texture
+T - change platform texture
 
 
 If you want to cheat:

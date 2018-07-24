@@ -37,7 +37,6 @@ bool secondLight = false;
 //const char * fragmentShaderWithSecondLight = "StandardShadingWithSecondLight.fragmentshader";
 
 #include "Resources.hpp"
-Resources resources;
 
 #include "Puppet.hpp"
 Puppet puppet;
@@ -78,11 +77,11 @@ float maxY = 6;
 float minHSuperSpeed = 18;
 float maxHSuperSpeed = 29.5;
 
-int activeTexture = 2;
+int activeTexture = 4;
 
 void changeTexture(){
     activeTexture++;
-    if (activeTexture == resources.textureLibrary.size()){
+    if (activeTexture == Resources::textureLibrary.size()){
         activeTexture=0;
     }
 }
@@ -112,7 +111,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         case GLFW_KEY_ESCAPE:
             glfwSetWindowShouldClose(window, GL_TRUE);
             break;
-        case GLFW_KEY_T:
+        case GLFW_KEY_C:
             if(action == GLFW_PRESS)
                 camera.switchViewMode();
             break;
@@ -170,7 +169,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
                 }
             }
             break;
-        case GLFW_KEY_J:
+        case GLFW_KEY_T:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
                 changeTexture();
             }
@@ -261,14 +260,15 @@ int main(void)
 	//error_callback Funktion wird fuer Fehlerfall uebergeben
 	glfwSetErrorCallback(error_callback);
 
-    
-    // Die folgenden vier Zeilen sind nštig auf dem Mac MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC MAC
-    // Au§erdem mŸssen die zu ladenden Dateien bei der aktuellen Projektkonfiguration
-    // unter DerivedData/Build/Products/Debug (oder dann Release) zu finden sein
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    #ifdef __APPLE__ || __MACH__
+        // Die folgenden vier Zeilen sind nštig auf dem Mac
+        // Au§erdem mŸssen die zu ladenden Dateien bei der aktuellen Projektkonfiguration
+        // unter DerivedData/Build/Products/Debug (oder dann Release) zu finden sein
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+        glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    #endif
     
     
 	// Open a window and create its OpenGL context
@@ -310,9 +310,8 @@ int main(void)
 	// Auf Keyboard-Events reagieren
 	glfwSetKeyCallback(window, key_callback);
     
-//    glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 
-	// Dark blue background
+	// Set background color
 	// red, green, blue, intensity -> 1 is intense
 	// Lediglich Definition der Loeschfarbe
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
@@ -325,14 +324,14 @@ int main(void)
     // Set our "myTextureSampler" sampler to user Texture Unit 0
     glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
 
-    resources.initialize();
+    Resources::initialize();
     
 	//CUSTOM
 	if (!secondLight) {
-		programID = LoadShaders(resources.vertexShader, resources.fragmentShader);
+		programID = LoadShaders(Resources::vertexShader, Resources::fragmentShader);
 	}
 	else {
-		programID = LoadShaders(resources.vertexShaderWithSecondLight, resources.fragmentShaderWithSecondLight);
+		programID = LoadShaders(Resources::vertexShaderWithSecondLight, Resources::fragmentShaderWithSecondLight);
 	}
 
     //tell the programID to the external MVP Class
@@ -347,10 +346,10 @@ int main(void)
 	//glDepthFunc(GL_LESS);
     
     
-//    Obj3D teapot("teapot.obj");
-    std::string teapotObj(resources.path+"/teapot.obj");
-    const char * teapotPath = teapotObj.c_str();
-    Obj3D teapot(teapotPath);
+////    Obj3D teapot("teapot.obj");
+//    std::string teapotObj(Resources::path+"/teapot.obj");
+//    const char * teapotPath = teapotObj.c_str();
+//    Obj3D teapot(teapotPath);
     
 	//second light
 	if (secondLight) {
@@ -386,7 +385,7 @@ int main(void)
 //        glm::mat4 Save = glm::mat4(1.f);
         
         
-        glBindTexture(GL_TEXTURE_2D, resources.textureLibrary[3]);
+        glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[4]);
 //        glBindTexture(GL_TEXTURE_2D, Wood2);
         
         //draw puppet only if third person mode is enabled
@@ -404,7 +403,7 @@ int main(void)
         
 //        glBindTexture(GL_TEXTURE_2D, IceTexture);
 //        glBindTexture(GL_TEXTURE_2D, DeepGrass);
-        glBindTexture(GL_TEXTURE_2D, resources.textureLibrary[activeTexture]);
+        glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[activeTexture]);
         
         //draw platforms
         for (int i=0; i<platforms.size(); i++){
@@ -438,8 +437,8 @@ int main(void)
 	glDeleteProgram(programID);
 
 	//Texturen aus Speicher loeschen
-    for (int i=0; i<resources.textureLibrary.size(); i++){
-        glDeleteTextures(1, &resources.textureLibrary[i]);
+    for (int i=0; i<Resources::textureLibrary.size(); i++){
+        glDeleteTextures(1, &Resources::textureLibrary[i]);
     }
 
 	// Close OpenGL window and terminate GLFW
