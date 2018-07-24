@@ -1,10 +1,14 @@
 #todo
-Game Class
-Collision Detector nur Referenz auf Platformen geben
 Lichtposition, zweites Licht?
 
 Windows Version
 
+Löschen:
+- cheat move Methoden
+- Util::drawCS
+- CollisionDetector auskommentiertes
+- Platform::drawFromTo
+- Util::print Methoden
 
 Collision Detection von der Seite
 
@@ -40,9 +44,8 @@ delete(camera);?
 - Move left/right hängt von verticalRotation ab
 - Puppe bewegt sich komisch, wenn sie zwischendurch nach links/rechts läuft
 - Texturkoordinaten
-
-
-
+- Game Class
+- Collision Detector nur Referenz auf Platformen geben
 
 
 Build and export:

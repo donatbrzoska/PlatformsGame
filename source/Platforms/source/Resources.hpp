@@ -27,5 +27,12 @@ class Resources {
     static const std::vector<std::string> textureFiles;
     static std::vector<GLuint> textureLibrary;
     
+    
+    static std::string jumpSoundFile;
+//    static const char * jumpSound;
+    
+    static std::string hitGroundSoundFile;
+//    static const char * landSound;
+    
     static void initialize();
 };

@@ -5,6 +5,8 @@
 #include "objects.hpp"
 #include "MVP.hpp"
 #include <random>
+//#include "Resources.hpp"
+#include <thread>
 
 class Util {
 public:
@@ -14,6 +16,9 @@ public:
     
     static glm::vec3 newPoint(glm::vec3 currentPoint, float minDistH, float maxDistH, float minDistV, float maxDistV,bool randomDirection);
     static float random(float from, float to);
+    
+    static void soundTask(std::string path);
+    static void playSound(std::string path);
     
     static void print(std::string s, glm::vec3 v);
     static void print(std::string s);

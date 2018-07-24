@@ -25,7 +25,6 @@ class Puppet {
     void drawPart(double h, double s, double b);
     
 public:
-    
     bool inAir;
     
     Puppet();

@@ -28,7 +28,7 @@ using namespace glm;
 #include "Obj3D.h"
 
 //CUSTOM
-bool secondLight = false;
+bool secondLight = true;
 
 //const char * vertexShader = "StandardShading.vertexshader";
 //const char * fragmentShader = "StandardShading.fragmentshader";
@@ -37,24 +37,11 @@ bool secondLight = false;
 //const char * fragmentShaderWithSecondLight = "StandardShadingWithSecondLight.fragmentshader";
 
 #include "Resources.hpp"
-
-#include "Puppet.hpp"
-Puppet puppet;
-
-#include "Camera.hpp"
-Camera camera;
-
-#include "Player.hpp"
-Player player;
-glm::vec3 startPosition = glm::vec3(0,5.3,0);
-double playerStepSize = 0.1;
-
-#include "CollisionDetector.hpp"
-CollisionDetector collisionDetector;
+#include <cstdlib>
+#include "Game.hpp"
+Game game;
 
 GLFWwindow* window;
-#include "Mouse.hpp"
-Mouse mouse = Mouse();
 
 #include "MVP.hpp"
 
@@ -62,46 +49,9 @@ Mouse mouse = Mouse();
 
 #include <thread>
 
-//glm::vec3 platformSize = glm::vec3(3, 0.6, 3);
-glm::vec3 platformSize = glm::vec3(4.5, 0.8, 4.5);
-
-std::vector<Platform> platforms;
-
-float minH_ = 9;
-float maxH_ = 16;
-float minH = minH_;
-float maxH = maxH_;
-float minY = 3;
-float maxY = 6;
-//
-float minHSuperSpeed = 18;
-float maxHSuperSpeed = 29.5;
-
-int activeTexture = 4;
-
-void changeTexture(){
-    activeTexture++;
-    if (activeTexture == Resources::textureLibrary.size()){
-        activeTexture=0;
-    }
-}
-
 void error_callback(int error, const char* description)
 {
 	fputs(description, stderr);
-}
-
-void resetGame(){
-    collisionDetector.reset();
-    platforms = {
-        Platform(glm::vec3(0, -5, -20), glm::vec3(15, 0.8, 15)),
-        Platform(glm::vec3(0, 0, 0), platformSize),
-        Platform(Util::newPoint(glm::vec3(0,0,0), minH, maxH, minY, maxY, true), platformSize)
-    };
-    for (int i=0; i<platforms.size(); i++){
-        collisionDetector.addPlatform(platforms[i]);
-    }
-    player.setPosition(startPosition);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -113,109 +63,97 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
             break;
         case GLFW_KEY_C:
             if(action == GLFW_PRESS)
-                camera.switchViewMode();
+                Game::camera.switchViewMode();
             break;
         case GLFW_KEY_W:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveForward(true);
+                Game::player.moveForward(true);
             } else {
-                player.moveForward(false);
+                Game::player.moveForward(false);
             }
             break;
         case GLFW_KEY_A:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveLeft(true);
+                Game::player.moveLeft(true);
             } else {
-                player.moveLeft(false);
+                Game::player.moveLeft(false);
             }
             break;
         case GLFW_KEY_S:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveBackward(true);
+                Game::player.moveBackward(true);
             } else {
-                player.moveBackward(false);
+                Game::player.moveBackward(false);
             }
             break;
         case GLFW_KEY_D:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveRight(true);
+                Game::player.moveRight(true);
             } else {
-                player.moveRight(false);
+                Game::player.moveRight(false);
             }
             break;
         case GLFW_KEY_SPACE:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.jump();
-                Platform np = Platform(Util::newPoint(platforms.back().position, minH, maxH, minY, maxY, true), platformSize);
-                platforms.push_back(np);
-                collisionDetector.addPlatform(np);
+                Game::player.jump();
+                Game::newPlatform();
             }
             break;
         case GLFW_KEY_N:
-            resetGame();
+            Game::reset();
             break;
         case GLFW_KEY_H:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                if (player.getSuperSpeedMode()) {
-                    player.setSuperSpeedMode(false);
-                    minH = minH_;
-                    maxH = maxH_;
-                    resetGame();
-                } else {
-                    player.setSuperSpeedMode(true);
-                    minH = minHSuperSpeed;
-                    maxH = maxHSuperSpeed;
-                    resetGame();
-                }
+                Game::toggleSuperSpeedMode();
             }
             break;
         case GLFW_KEY_T:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                changeTexture();
+                Game::changeTexture();
             }
             break;
             
             
         case GLFW_KEY_ENTER:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveUp_(true);
+                Game::player.moveUp_(true);
             } else {
-                player.moveUp_(false);
+                Game::player.moveUp_(false);
             }
             break;
         case GLFW_KEY_RIGHT_SHIFT:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveDown_(true);
+                Game::player.moveDown_(true);
             } else {
-                player.moveDown_(false);
+                Game::player.moveDown_(false);
             }
             break;
         case GLFW_KEY_LEFT:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveLeft_(true);
+                Game::player.moveLeft_(true);
             } else {
-                player.moveLeft_(false);
+                Game::player.moveLeft_(false);
             }
             break;
         case GLFW_KEY_RIGHT:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveRight_(true);
+                Game::player.moveRight_(true);
             } else {
-                player.moveRight_(false);
+                Game::player.moveRight_(false);
             }
             break;
         case GLFW_KEY_UP:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveForward_(true);
+                Game::player.moveForward_(true);
             } else {
-                player.moveForward_(false);
+                Game::player.moveForward_(false);
             }
             break;
         case GLFW_KEY_DOWN:
             if (action==GLFW_PRESS | action==GLFW_REPEAT) {
-                player.moveBackward_(true);
+                Game::player.moveBackward_(true);
             } else {
-                player.moveBackward_(false);
+                Game::player.moveBackward_(false);
             }
             break;
         default:
@@ -224,10 +162,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 }
 
 void processMouseMove(){
-    double diffX = mouse.getDifferenceX();
-    double diffY = mouse.getDifferenceY();
-    player.turn("h", diffX/5);
-    player.turn("v", diffY/5);
+    double diffX = Game::mouse.getDifferenceX();
+    double diffY = Game::mouse.getDifferenceY();
+    Game::player.turn("h", diffX/5);
+    Game::player.turn("v", diffY/5);
 }
 
 
@@ -240,15 +178,7 @@ GLuint programID;
 
 int main(void)
 {
-    puppet = Puppet();
-    player.setPuppet(&puppet);
-    player.setCamera(&camera);
-    player.setCollisionDetector(&collisionDetector);
-    player.setRelativeBottomPosition(glm::vec3(0,4.5,0));
-    
-    //resets collision detector, sets player position, creates first platforms and tells them to the collision detector
-    resetGame();
-
+    Game::initialize();
 	// Initialise GLFW-Bibliothek (kann unter anderem Fenster oeffnen)
 	if (!glfwInit())
 	{
@@ -278,9 +208,8 @@ int main(void)
 		"Platforms", // Ueberschrift
 		NULL,  // windowed mode
 		NULL); // shared window
-    
     //tell the window to the mouse
-    mouse.setWindow(window);
+    Game::mouse.setWindow(window);
     
     
 //Fensterpointer == null -> terminieren
@@ -351,16 +280,9 @@ int main(void)
 //    const char * teapotPath = teapotObj.c_str();
 //    Obj3D teapot(teapotPath);
     
-	//second light
-	if (secondLight) {
-		glm::vec3 lightPos2 = glm::vec3(5, 80, -7);	//x positiv -> links, z negativ -> vorne
-		glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace2"), lightPos2.x, lightPos2.y, lightPos2.z);
-		//std::cout << "put second light";
-	}
     
-    
-    player.moveForward(true);
-    player.moveForward(false);
+    Game::player.moveForward(true);
+    Game::player.moveForward(false);
     
 	// Eventloop
 	while (!glfwWindowShouldClose(window))
@@ -369,18 +291,27 @@ int main(void)
 	    // Clear the screen | Ueberlappungsprojektion++
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
-        View = glm::lookAt(camera.position, camera.lookAtAbsolute, glm::vec3(0,1,0));
+        View = glm::lookAt(Game::camera.position, Game::camera.lookAtAbsolute, glm::vec3(0,1,0));
         //tell the view to the external MVP Class
         MVP::setView(View);
         
         //reset player position if he falls in void
-        if (player.position.y < -15) {
-            player.setPosition(startPosition);
+        if (Game::player.position.y < -15) {
+//            Game::player.setPosition(Game::startPosition);
+            Game::reset();
         }
         
         //light follows the player
-        glm::vec3 lightPos = player.position + glm::vec3(0,20,0);
+        glm::vec3 lightPos = Game::player.position + glm::vec3(0,50,0);    //x positiv -> links, z negativ -> vorne
         glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace"), lightPos.x, lightPos.y, lightPos.z);
+        
+        //second light
+        if (secondLight) {
+            glm::vec3 lightPos2 = Game::player.position + Game::player.getLookAtRelativeH()*50.f;
+//            Util::print("light pos2:", lightPos2);
+            glUniform3f(glGetUniformLocation(programID, "LightPosition_worldspace2"), lightPos2.x, lightPos2.y, lightPos2.z);
+            //std::cout << "put second light";
+        }
         
 //        glm::mat4 Save = glm::mat4(1.f);
         
@@ -389,8 +320,8 @@ int main(void)
 //        glBindTexture(GL_TEXTURE_2D, Wood2);
         
         //draw puppet only if third person mode is enabled
-        if(camera.getThirdPersonMode()){
-            puppet.drawPuppet();
+        if(Game::camera.getThirdPersonMode()){
+            Game::puppet.drawPuppet();
             
             //"SPHERE-Player"
 //            Model = Save;
@@ -403,15 +334,15 @@ int main(void)
         
 //        glBindTexture(GL_TEXTURE_2D, IceTexture);
 //        glBindTexture(GL_TEXTURE_2D, DeepGrass);
-        glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[activeTexture]);
+        glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[Game::activeTexture]);
         
         //draw platforms
-        for (int i=0; i<platforms.size(); i++){
-            platforms[i].draw();
+        for (int i=0; i<Game::platforms.size(); i++){
+            Game::platforms[i].draw();
         }
         
-        
-        
+        const char * s = std::string("Platforms - Score: " + std::to_string(Game::collisionDetector.score)).c_str();
+        glfwSetWindowTitle(window, s);
 //        glActiveTexture(GL_TEXTURE0);
 //        glBindTexture(GL_TEXTURE_2D, Texture);
 //        ////"Teapot"

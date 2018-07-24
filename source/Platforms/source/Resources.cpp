@@ -49,6 +49,12 @@ const std::vector<std::string> Resources::textureFiles = {
     "stone2.bmp",
 };
 
+std::string Resources::jumpSoundFile;
+//const char * Resources::jumpSound;
+
+std::string Resources::hitGroundSoundFile;
+//const char * Resources::landSound;
+
 std::vector<GLuint> Resources::textureLibrary;
 
 void Resources::initialize(){
@@ -73,4 +79,10 @@ void Resources::initialize(){
     for (int i=0; i<textureFiles.size(); i++) {
         textureLibrary.push_back(loadBMP_custom((path + textureFiles[i]).c_str()));
     }
+    
+    jumpSoundFile = path + "jump.mp3";
+//    jumpSound = jumpSoundFile.c_str();
+    
+    hitGroundSoundFile = path + "hit_ground.mp3";
+//    landSound = landSoundFile.c_str();
 }

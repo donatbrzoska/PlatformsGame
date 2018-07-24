@@ -62,8 +62,10 @@ bool Player::getSuperSpeedMode() {
     return superSpeed;
 }
 
-glm::vec3 Player::getLookAtRelative() {
-    return lookAtRelative;
+glm::vec3 Player::getLookAtRelativeH() {
+    float z = sin(Util::degreesToRadians(-horizontalRotation));
+    float x = cos(Util::degreesToRadians(-horizontalRotation));
+    return glm::vec3(x, 0, z);
 }
 
 glm::vec3 Player::bottomPosition(){
@@ -95,7 +97,6 @@ void Player::updateAndSleep(std::chrono::nanoseconds t){
 float jumpFunction(float x, float jumpHeight){
     return -(jumpHeight/8)*std::pow(x, 2) + jumpHeight;
 }
-
 void Player::jump_up(){
     glm::vec3 start = position;
     int iterations = 30*jumpHeight/2;
@@ -105,7 +106,6 @@ void Player::jump_up(){
         updateAndSleep(jumpSleepTime);
     }
 }
-
 void Player::jump_fall(){
     glm::vec3 start = position;
     int iterations = 30*jumpHeight/2;
@@ -156,19 +156,20 @@ void Player::jump_fall(){
             lastRelativePosition = lastRelativePosition-distanceMade;
             updateAndSleep(jumpSleepTime);
         }
+    } else {
+//        Util::playSound(Resources::hitGroundSoundFile);
     }
     inAir = false;
 }
-
 void Player::jumpTask(){
     puppet->inAir = true;
     jump_up();
     jump_fall();
     puppet->inAir = false;
 }
-
 void Player::jump(){
     if (!inAir) {
+//        Util::playSound(Resources::jumpSoundFile);
         inAir = true;
         jumpThread = std::thread(&Player::jumpTask, this);
         jumpThread.detach();

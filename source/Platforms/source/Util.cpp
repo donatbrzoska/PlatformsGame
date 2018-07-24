@@ -27,8 +27,24 @@ float Util::random(float from, float to) {
 }
 
 glm::mat4 Util::custom_rotate(glm::mat4 m, float angle, glm::vec3 n){
+#ifdef __APPLE__ || __MACH__
     float newAngle = degreesToRadians(angle);
+#else
+    float newAngle = angle;
+#endif
     return glm::rotate(m, newAngle, n);
+}
+
+void Util::soundTask(std::string path){
+    system(("afplay '" + path + "'").c_str());
+}
+void Util::playSound(std::string path){
+#ifdef __APPLE__ || __MACH__
+    std::thread soundThread = std::thread(&Util::soundTask, path);
+    soundThread.detach();
+#else
+    std::cout << "no operating system other than macOS supports sound currently" << std::endl;
+#endif
 }
 
 void Util::print(std::string s, glm::vec3 v) {

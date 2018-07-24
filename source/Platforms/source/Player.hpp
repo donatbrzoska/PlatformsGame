@@ -6,6 +6,7 @@
 #include "CollisionDetector.hpp"
 #include "Puppet.hpp"
 #include "Platform.hpp"
+#include "Resources.hpp"
 
 #include <thread>
 #include <math.h>
@@ -107,7 +108,7 @@ public:
     void setRelativeBottomPosition(glm::vec3 position);
     void setStepSize(float stepSize);
     
-    glm::vec3 getLookAtRelative();
+    glm::vec3 getLookAtRelativeH();
     
     void turn(std::string command, float angle);
     
