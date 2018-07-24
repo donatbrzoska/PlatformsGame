@@ -47,6 +47,7 @@ const std::vector<std::string> Resources::textureFiles = {
     "sandstone.bmp",
     //https://img1.cgtrader.com/items/255716/98c3c16d26/stone-wall-6-3d-model-max-obj-fbx.jpg
     "stone2.bmp",
+    "wood1.bmp",
 };
 
 std::string Resources::jumpSoundFile;

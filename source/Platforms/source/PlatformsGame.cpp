@@ -314,9 +314,9 @@ int main(void)
         }
         
 //        glm::mat4 Save = glm::mat4(1.f);
+        //Resources::textureLibrary.size()-1
         
-        
-        glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[4]);
+        glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[Resources::textureLibrary.size()-1]);
 //        glBindTexture(GL_TEXTURE_2D, Wood2);
         
         //draw puppet only if third person mode is enabled

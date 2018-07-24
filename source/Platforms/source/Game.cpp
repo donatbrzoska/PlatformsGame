@@ -43,7 +43,7 @@ void Game::initialize(){
 
 void Game::changeTexture(){
     activeTexture++;
-    if (activeTexture == Resources::textureLibrary.size()){
+    if (activeTexture == Resources::textureLibrary.size()-1){
         activeTexture=0;
     }
 }
