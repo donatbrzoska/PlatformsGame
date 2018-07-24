@@ -107,6 +107,7 @@ public:
     void setRelativeBottomPosition(glm::vec3 position);
     void setStepSize(float stepSize);
     
+    glm::vec3 getLookAtRelative();
     
     void turn(std::string command, float angle);
     

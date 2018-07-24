@@ -125,7 +125,7 @@ std::string deepgrass(path+"/deepGrass.bmp");
 const char * deepGrass = deepgrass.c_str();
 
 std::vector<GLuint> textureLibrary;
-int activeTexture = 1;
+int activeTexture = 2;
 
 void changeTexture(){
     activeTexture++;

@@ -62,6 +62,10 @@ bool Player::getSuperSpeedMode() {
     return superSpeed;
 }
 
+glm::vec3 Player::getLookAtRelative() {
+    return lookAtRelative;
+}
+
 glm::vec3 Player::bottomPosition(){
     return position - relativeBottomPosition;
 }
