@@ -1,7 +1,7 @@
 #include "Resources.hpp"
 
 //CHANGE THIS PATH RIGHT HERE TO YOUR PROJECT DIRECTORY PATH
-std::string Resources::workingDirectory = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/CurrentVersion";
+std::string Resources::workingDirectory = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/Platforms/CurrentVersion";
 std::string Resources::resourceDirectory = "/source/Platforms/resources/";
 
 std::string Resources::path;

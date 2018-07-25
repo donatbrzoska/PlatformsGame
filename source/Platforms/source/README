@@ -1,5 +1,7 @@
 Students: Steven Mi, Donat Brzoska
 
+In order to make this running on you machine, fix the path in the varibale Ressources::workingDirectory
+
 Controls:
 W,A,S,D - Walk
 SPACE - Jump
