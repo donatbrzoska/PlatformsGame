@@ -35,14 +35,12 @@
 /* Begin PBXFileReference section */
 		683E867B2105130C00D2E5D4 /* Presentation */ = {isa = PBXFileReference; lastKnownFileType = text; path = Presentation; sourceTree = "<group>"; };
 		683E867D2105137D00D2E5D4 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		68536D7520C5328B008E38FE /* Trash */ = {isa = PBXFileReference; lastKnownFileType = text; path = Trash; sourceTree = "<group>"; };
 		68536D7620C55807008E38FE /* CollisionDetector.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = CollisionDetector.cpp; sourceTree = "<group>"; };
 		68536D7720C55807008E38FE /* CollisionDetector.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = CollisionDetector.hpp; sourceTree = "<group>"; };
 		68536D7920C57777008E38FE /* Platform.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Platform.cpp; sourceTree = "<group>"; };
 		68536D7A20C57777008E38FE /* Platform.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Platform.hpp; sourceTree = "<group>"; };
 		68814FD320C00F6300344D98 /* Mouse.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mouse.cpp; sourceTree = "<group>"; };
 		68814FD420C00F6300344D98 /* Mouse.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mouse.hpp; sourceTree = "<group>"; };
-		68814FD620C01E5C00344D98 /* Changes */ = {isa = PBXFileReference; lastKnownFileType = text; path = Changes; sourceTree = "<group>"; };
 		68814FD720C024A500344D98 /* Todo */ = {isa = PBXFileReference; lastKnownFileType = text; path = Todo; sourceTree = "<group>"; };
 		68814FD820C026DA00344D98 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		68814FD920C026DA00344D98 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
@@ -142,7 +140,6 @@
 				6897E6E321073272003D0849 /* Resources.hpp */,
 				68814FD320C00F6300344D98 /* Mouse.cpp */,
 				68814FD420C00F6300344D98 /* Mouse.hpp */,
-				68814FD620C01E5C00344D98 /* Changes */,
 				68814FD720C024A500344D98 /* Todo */,
 				68814FD820C026DA00344D98 /* Camera.cpp */,
 				68814FD920C026DA00344D98 /* Camera.hpp */,
@@ -150,7 +147,6 @@
 				68814FDC20C02AA400344D98 /* Player.hpp */,
 				68814FE320C08CDF00344D98 /* Util.cpp */,
 				68814FE420C08CDF00344D98 /* Util.hpp */,
-				68536D7520C5328B008E38FE /* Trash */,
 				68536D7620C55807008E38FE /* CollisionDetector.cpp */,
 				68536D7720C55807008E38FE /* CollisionDetector.hpp */,
 				68536D7920C57777008E38FE /* Platform.cpp */,

@@ -61,6 +61,7 @@ std::vector<GLuint> Resources::textureLibrary;
 void Resources::initialize(){
     #ifdef __APPLE__ || __MACH__
     path = workingDirectory+resourceDirectory;
+//    path = "."+resourceDirectory;
     #else
         path = "";
     #endif

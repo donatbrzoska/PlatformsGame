@@ -178,6 +178,7 @@ GLuint programID;
 
 int main(void)
 {
+//    fprintf( stderr, "cwd: %s\n", getenv("PWD") );
     Game::initialize();
 	// Initialise GLFW-Bibliothek (kann unter anderem Fenster oeffnen)
 	if (!glfwInit())

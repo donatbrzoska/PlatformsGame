@@ -1,5 +1,4 @@
 #todo
-Lichtposition, zweites Licht?
 
 Windows Version
 
@@ -46,6 +45,7 @@ delete(camera);?
 - Texturkoordinaten
 - Game Class
 - Collision Detector nur Referenz auf Platformen geben
+- Lichtposition, zweites Licht?
 
 
 Build and export:

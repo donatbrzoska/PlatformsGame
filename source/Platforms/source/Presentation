@@ -1,8 +1,9 @@
 - Maus Steuerung
 - Normalen
 - Texturen
-- Springen
+- Springen -> Kollision
 - Laufen -> auch gleichzeitig nach vorne und links/rechts
-- herunterfallen
+- Herunterfallen
 - Score
+- zweites Licht
 - siehe README Controls
