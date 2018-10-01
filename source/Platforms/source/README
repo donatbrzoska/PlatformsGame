@@ -1,10 +1,11 @@
-Students: Steven Mi, Donat Brzoska
+Students: Steven Mi (558366) (Puppet), Donat Brzoska (553655) (Game Logic)
 
-In order to make this running on you machine, fix the path in the varibale Ressources::workingDirectory
+In order to make this running on your machine, fix the path in the variable Ressources::workingDirectory
 
 Controls:
 W,A,S,D - Walk
 SPACE - Jump
+Mouse - turn around
 
 C - switch between first/third person mode
 
@@ -64,7 +65,7 @@ Collision detection process:
 4. everytime the player moves, it asks the collision detector whether there are collisions with it's foot
 
 
-Why so many threads? (the player moving threads in particular)
+Why so many threads? (the player-moving-threads in particular)
 - the problem is, that if you want to go into two directions simultaniously, glew has problems detecting 2 pressed keys at the same time
 -> this way threads get started once, when the key is pressed and stopped once if when key is released
 - another reason is, that this way a smooth moving animation is made possible that can also be sped up easily

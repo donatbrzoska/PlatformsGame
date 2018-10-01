@@ -1,3 +1,5 @@
+//Written by Prof. Dr. Thomas Jung
+
 #ifndef SHADER_HPP
 #define SHADER_HPP
 

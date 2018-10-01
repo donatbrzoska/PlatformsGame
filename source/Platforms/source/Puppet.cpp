@@ -94,7 +94,8 @@ void Puppet::drawPart(double h, double s) {
     Model = glm::scale(Model, glm::vec3(s, h / 2, s));
     //    sendMVP();
     MVP::setModel(Model);
-    drawSphere(10, 10);
+//    drawSphere(10, 10);
+    drawSphere(30, 30);
     Model = Save;
 }
 
@@ -105,7 +106,8 @@ void Puppet::drawPart(double h, double s, double b) {
     Model = glm::scale(Model, glm::vec3(s, h / 2, s));
     //    sendMVP();
     MVP::setModel(Model);
-    drawSphere(10, 10);
+//    drawSphere(10, 10);
+    drawSphere(30, 30);
     Model = Save;
 }
 

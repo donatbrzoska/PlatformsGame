@@ -14,40 +14,25 @@
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-// Achtung, die OpenGL-Tutorials nutzen glfw 2.7, glfw kommt mit einem veränderten API schon in der Version 3 
-
 // Befindet sich bei den OpenGL-Tutorials unter "common"
 #include "shader.hpp"
 
 // Wuerfel und Kugel
 #include "objects.hpp"
 
-#include "objloader.hpp"
-
 #include <iostream>
-#include "Obj3D.h"
-
-//CUSTOM
-bool secondLight = true;
-
-//const char * vertexShader = "StandardShading.vertexshader";
-//const char * fragmentShader = "StandardShading.fragmentshader";
-//
-//const char * vertexShaderWithSecondLight = "StandardShadingWithSecondLight.vertexshader";
-//const char * fragmentShaderWithSecondLight = "StandardShadingWithSecondLight.fragmentshader";
-
 #include "Resources.hpp"
 #include <cstdlib>
 #include "Game.hpp"
+#include "MVP.hpp"
+#include <vector>
+#include <thread>
+
+bool secondLight = true;
+
 Game game;
 
 GLFWwindow* window;
-
-#include "MVP.hpp"
-
-#include <vector>
-
-#include <thread>
 
 void error_callback(int error, const char* description)
 {
@@ -178,8 +163,8 @@ GLuint programID;
 
 int main(void)
 {
-//    fprintf( stderr, "cwd: %s\n", getenv("PWD") );
     Game::initialize();
+    
 	// Initialise GLFW-Bibliothek (kann unter anderem Fenster oeffnen)
 	if (!glfwInit())
 	{
@@ -192,8 +177,8 @@ int main(void)
 	glfwSetErrorCallback(error_callback);
 
     #ifdef __APPLE__ || __MACH__
-        // Die folgenden vier Zeilen sind nštig auf dem Mac
-        // Au§erdem mŸssen die zu ladenden Dateien bei der aktuellen Projektkonfiguration
+        // Die folgenden vier Zeilen sind noetig auf dem Mac
+        // Ausserdem muessen die zu ladenden Dateien bei der aktuellen Projektkonfiguration
         // unter DerivedData/Build/Products/Debug (oder dann Release) zu finden sein
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
@@ -225,7 +210,7 @@ int main(void)
 	glfwMakeContextCurrent(window);
 
 	// Initialize GLEW
-	// GLEW ermöglicht Zugriff auf OpenGL-API > 1.1
+	// GLEW ermoeglicht Zugriff auf OpenGL-API > 1.1
 	glewExperimental = true; // Needed for core profile
 
 	if (glewInit() != GLEW_OK)
@@ -256,7 +241,6 @@ int main(void)
 
     Resources::initialize();
     
-	//CUSTOM
 	if (!secondLight) {
 		programID = LoadShaders(Resources::vertexShader, Resources::fragmentShader);
 	}
@@ -264,7 +248,7 @@ int main(void)
 		programID = LoadShaders(Resources::vertexShaderWithSecondLight, Resources::fragmentShaderWithSecondLight);
 	}
 
-    //tell the programID to the external MVP Class
+    //tell the programID to the MVP Class
     MVP::initialize(programID);
     
     
@@ -274,12 +258,6 @@ int main(void)
 	//korrekte Ueberlappungsprojektion ermoeglichen
 	glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LESS);
-    
-    
-////    Obj3D teapot("teapot.obj");
-//    std::string teapotObj(Resources::path+"/teapot.obj");
-//    const char * teapotPath = teapotObj.c_str();
-//    Obj3D teapot(teapotPath);
     
     
     Game::player.moveForward(true);
@@ -293,12 +271,11 @@ int main(void)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
         View = glm::lookAt(Game::camera.position, Game::camera.lookAtAbsolute, glm::vec3(0,1,0));
-        //tell the view to the external MVP Class
+        //tell the view to the MVP Class
         MVP::setView(View);
         
-        //reset player position if he falls in void
+        //reset player position if it falls in the void
         if (Game::player.position.y < -15) {
-//            Game::player.setPosition(Game::startPosition);
             Game::reset();
         }
         
@@ -314,11 +291,8 @@ int main(void)
             //std::cout << "put second light";
         }
         
-//        glm::mat4 Save = glm::mat4(1.f);
-        //Resources::textureLibrary.size()-1
         
         glBindTexture(GL_TEXTURE_2D, Resources::textureLibrary[Resources::textureLibrary.size()-1]);
-//        glBindTexture(GL_TEXTURE_2D, Wood2);
         
         //draw puppet only if third person mode is enabled
         if(Game::camera.getThirdPersonMode()){
@@ -344,19 +318,6 @@ int main(void)
         
         const char * s = std::string("Platforms - Score: " + std::to_string(Game::collisionDetector.score)).c_str();
         glfwSetWindowTitle(window, s);
-//        glActiveTexture(GL_TEXTURE0);
-//        glBindTexture(GL_TEXTURE_2D, Texture);
-//        ////"Teapot"
-//        Model = Save;
-//        Model = glm::translate(Model, glm::vec3(15, 0.0, 15));
-//        Model = glm::scale(Model, glm::vec3(1.0 / 100.0, 1.0 / 100.0, 1.0 / 100.0));
-//        Model = glm::rotate(Model, Util::degreesToRadians(-100), glm::vec3(1,0,0));
-////        Model = Util::custom_rotate(Model, 270, glm::vec3(0,1,0));
-////        sendMVP();
-//        MVP::setModel(Model);
-//        teapot.display();
-//        Model = Save;
-
 
         // Swap buffers -> Bild anzeigen
         glfwSwapBuffers(window);

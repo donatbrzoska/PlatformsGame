@@ -1,3 +1,5 @@
+//Written by Prof. Dr. Thomas Jung
+
 #ifndef TEXTURE_HPP
 #define TEXTURE_HPP
 

@@ -1,8 +1,16 @@
 #include "Resources.hpp"
 
-//CHANGE THIS PATH RIGHT HERE TO YOUR PROJECT DIRECTORY PATH
-std::string Resources::workingDirectory = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/Platforms/CurrentVersion";
-std::string Resources::resourceDirectory = "/source/Platforms/resources/";
+//Note: in order to use relative paths, you need to do the following:
+//1. click the project
+//2. go to build phases
+//3. add build phase "Copy Files"
+//4. add the resources folder to the section
+
+//DEPRECATED: CHANGE THIS PATH TO YOUR PROJECT DIRECTORY PATH
+//std::string Resources::workingDirectory = "/Users/donatdeva/Documents/Studium/4. Semester/Computergrafik/Projekt/Platforms/CurrentVersion";
+//std::string Resources::resourceDirectory = "/source/Platforms/resources/";
+std::string Resources::workingDirectory = ".";
+std::string Resources::resourceDirectory = "/resources/";
 
 std::string Resources::path;
 
@@ -59,12 +67,8 @@ std::string Resources::hitGroundSoundFile;
 std::vector<GLuint> Resources::textureLibrary;
 
 void Resources::initialize(){
-    #ifdef __APPLE__ || __MACH__
+    
     path = workingDirectory+resourceDirectory;
-//    path = "."+resourceDirectory;
-    #else
-        path = "";
-    #endif
     
     vertShader = path + "StandardShading.vertexshader";
     vertexShader = vertShader.c_str();

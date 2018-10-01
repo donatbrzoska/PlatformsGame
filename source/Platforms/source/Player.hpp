@@ -12,6 +12,8 @@
 #include <math.h>
 #include <chrono>
 
+#include <mutex>
+
 //keeps track of all data concerning the player (position, speed, speedMode, ...)
 //invokes puppet to animate
 //invokes updates on camera

@@ -1,5 +1,4 @@
 #pragma once
-//vec n
 #include <string>
 #include <glm/gtc/matrix_transform.hpp>
 

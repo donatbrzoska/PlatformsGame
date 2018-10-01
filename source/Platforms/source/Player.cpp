@@ -7,7 +7,12 @@ Player::Player()
     position = glm::vec3(0, 0, -5);
     relativeBottomPosition = glm::vec3(0, 1.f/5.f, 0);
     inAir = false;
-    stepSize = 0.02;
+    
+    #ifdef __APPLE__ || __MACH__
+        stepSize = 0.02;
+    #else
+        stepSize = 0.035;
+    #endif
     
     lookAtRelative = glm::vec3(0, 0, 1);
     lookAtAbsolute = position + lookAtRelative;

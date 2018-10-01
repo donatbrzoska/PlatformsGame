@@ -1,3 +1,5 @@
+//Written by Prof. Dr. Thomas Jung
+
 #include <stdio.h>
 #include <string>
 #include <vector>

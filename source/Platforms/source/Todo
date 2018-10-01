@@ -2,7 +2,7 @@
 
 Windows Version
 
-Löschen:
+Loeschen:
 - cheat move Methoden
 - Util::drawCS
 - CollisionDetector auskommentiertes
@@ -21,7 +21,7 @@ manchmal steckt die Puppe in der Platform mit den Füßen
 
 ##fixed:
 manchmal wird die Puppe im Jump nach unten gezogen
-Puppe läuft manchmal rückwärts statt vorwärts (vor allem sichtbar beim fw+re laufen)
+Puppe läuft manchmal rückwärts statt vorwaerts (vor allem sichtbar beim vorwaerts+rechts laufen)
 
 
 

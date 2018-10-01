@@ -1,5 +1,7 @@
 #version 330 core
 
+//Written by Prof. Dr. Thomas Jung
+
 // Interpolated values from the vertex shaders
 in vec2 UV;
 in vec3 Position_worldspace;
