@@ -1,4 +1,4 @@
-Students: Steven Mi (558366) (Puppet), Donat Brzoska (553655) (Game Logic)
+Students: Steven Mi (558366) (Puppet), Donat Brzoska (553655)
 
 In order to make this running on your machine, fix the path in the variable Ressources::workingDirectory
 
