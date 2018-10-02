@@ -1,9 +1,10 @@
-- Maus Steuerung
-- Normalen
-- Texturen
-- Springen -> Kollision
-- Laufen -> auch gleichzeitig nach vorne und links/rechts
-- Herunterfallen
-- Score
-- zweites Licht
-- siehe README Controls
+- mouse controls
+- normals for correct lighting
+- texture coordinates to make nice textures possible
+- jumping + simple collisions
+- walking, also in multiple directions simultaniously
+- falling
+- score in window title
+- second light
+- animated puppet
+- controls are written down in README
