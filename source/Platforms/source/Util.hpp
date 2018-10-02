@@ -8,6 +8,7 @@
 //#include "Resources.hpp"
 #include <thread>
 
+//cointains various methods, the print methods are just written for debugging purposes
 class Util {
 public:
     Util(){};

@@ -1,6 +1,6 @@
 #include "Resources.hpp"
 
-//Note: in order to use relative paths, you need to do the following:
+//Note: in order to use relative paths, the following steps are needed:
 //1. click the project
 //2. go to build phases
 //3. add build phase "Copy Files"

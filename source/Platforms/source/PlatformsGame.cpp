@@ -3,21 +3,14 @@
 #include <stdlib.h>
 #include <vector>
 
-// Include GLEW
 #include <GL/glew.h>
-
-// Include GLFW
 #include <GLFW/glfw3.h>
-
-// Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 using namespace glm;
 
-// Befindet sich bei den OpenGL-Tutorials unter "common"
 #include "shader.hpp"
 
-// Wuerfel und Kugel
 #include "objects.hpp"
 
 #include <iostream>
@@ -154,8 +147,8 @@ void processMouseMove(){
 }
 
 
-// Diese Drei Matrizen global (Singleton-Muster), damit sie jederzeit modifiziert und
-// an die Grafikkarte geschickt werden koennen
+// these three matrices are global variables, so they can be modified at any time
+// and be sent to the graphics card
 glm::mat4 Projection;
 glm::mat4 View;
 glm::mat4 Model;
@@ -165,21 +158,21 @@ int main(void)
 {
     Game::initialize();
     
-	// Initialise GLFW-Bibliothek (kann unter anderem Fenster oeffnen)
+	// Initialize GLFW-library (this can open windows for example)
 	if (!glfwInit())
 	{
 		fprintf(stderr, "Failed to initialize GLFW\n");
 		exit(EXIT_FAILURE);
 	}
 
-	// Fehler werden auf stderr ausgegeben, s. o.
-	//error_callback Funktion wird fuer Fehlerfall uebergeben
+	//Errors are printed to stderr
+	//error_callback function is handed over for the case of an error
 	glfwSetErrorCallback(error_callback);
 
     #ifdef __APPLE__ || __MACH__
-        // Die folgenden vier Zeilen sind noetig auf dem Mac
-        // Ausserdem muessen die zu ladenden Dateien bei der aktuellen Projektkonfiguration
-        // unter DerivedData/Build/Products/Debug (oder dann Release) zu finden sein
+        //The following four lines are necessary on the mac
+        //also, the files to be loaded have to be located at
+        //DerivedData/Build/Products/Debug (or Release)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
         glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -187,18 +180,19 @@ int main(void)
     #endif
     
     
-	// Open a window and create its OpenGL context
-	// glfwWindowHint vorher aufrufen, um erforderliche Resourcen festzulegen
+	//Open a window and create its OpenGL context
+	//call glfwWindowHint before, to set needed resources
     window = glfwCreateWindow(1024, // Breite (default: 1024)
-		768,  // Hoehe
-		"Platforms", // Ueberschrift
+		768,  // height
+		"Platforms", // title
 		NULL,  // windowed mode
 		NULL); // shared window
+    
     //tell the window to the mouse
     Game::mouse.setWindow(window);
     
     
-//Fensterpointer == null -> terminieren
+//if windowpointer == null -> terminate
 	if (!window)
 	{
 		glfwTerminate();
@@ -206,11 +200,11 @@ int main(void)
 	}
 
 	// Make the window's context current (wird nicht automatisch gemacht)
-	// -> mehrere Fenster -> immer wieder aufrufen mit entsprechendem Fenster
+	// -> with multiple windows -> call the following again if needed with the respective window
 	glfwMakeContextCurrent(window);
 
 	// Initialize GLEW
-	// GLEW ermoeglicht Zugriff auf OpenGL-API > 1.1
+	// GLEW makes access to OpenGL-API > 1.1 possible
 	glewExperimental = true; // Needed for core profile
 
 	if (glewInit() != GLEW_OK)
@@ -222,13 +216,13 @@ int main(void)
 	//OPEN GL SETUP UNTIL HERE
 
 
-	// Auf Keyboard-Events reagieren
+	//react to keyboard events
 	glfwSetKeyCallback(window, key_callback);
     
 
-	// Set background color
-	// red, green, blue, intensity -> 1 is intense
-	// Lediglich Definition der Loeschfarbe
+	//Set background color
+	//red, green, blue, intensity -> 1 is intense
+	//deleting color is defined
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
     
@@ -252,10 +246,10 @@ int main(void)
     MVP::initialize(programID);
     
     
-	// Shader auch benutzen !
+	//user Shader
 	glUseProgram(programID);
     
-	//korrekte Ueberlappungsprojektion ermoeglichen
+	//make correct overlapping projection possible
 	glEnable(GL_DEPTH_TEST);
 	//glDepthFunc(GL_LESS);
     
@@ -267,7 +261,7 @@ int main(void)
 	while (!glfwWindowShouldClose(window))
 	{
         
-	    // Clear the screen | Ueberlappungsprojektion++
+	    // Clear the screen | overlapping projection++
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
         View = glm::lookAt(Game::camera.position, Game::camera.lookAtAbsolute, glm::vec3(0,1,0));
@@ -319,22 +313,22 @@ int main(void)
         const char * s = std::string("Platforms - Score: " + std::to_string(Game::collisionDetector.score)).c_str();
         glfwSetWindowTitle(window, s);
 
-        // Swap buffers -> Bild anzeigen
+        // Swap buffers -> show frame
         glfwSwapBuffers(window);
         
-		// Poll for and process events -> Aufruf der entsprechenden callback Funktionen
+		// Poll for and process events -> calls the respective callback function
         glfwPollEvents();
         processMouseMove();
 	}
 
 	glDeleteProgram(programID);
 
-	//Texturen aus Speicher loeschen
+	//delete textures from memory
     for (int i=0; i<Resources::textureLibrary.size(); i++){
         glDeleteTextures(1, &Resources::textureLibrary[i]);
     }
 
-	// Close OpenGL window and terminate GLFW
+	//close OpenGL window and terminate GLFW
 	glfwTerminate();
 	return 0;
 }
