@@ -4,16 +4,15 @@ This project was developed in my fourth semester in a computer graphics course. 
 
 
 Controls:
++ W,A,S,D - Walk
++ SPACE - Jump
++ Mouse - turn around
 
-W,A,S,D - Walk
-SPACE - Jump
-Mouse - turn around
++ C - switch between first/third person mode
 
-C - switch between first/third person mode
-
-N - new game
-H - switch speed mode
-T - change platform texture
++ N - new game
++ H - switch speed mode
++ T - change platform texture
 
 
 If you want to cheat:
