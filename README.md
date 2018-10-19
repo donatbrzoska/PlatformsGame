@@ -4,6 +4,7 @@ This project was developed in my fourth semester in a computer graphics course. 
 
 
 Controls:
+
 W,A,S,D - Walk
 SPACE - Jump
 Mouse - turn around
