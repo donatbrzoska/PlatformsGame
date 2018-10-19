@@ -16,9 +16,9 @@ Controls:
 
 
 If you want to cheat:
-ENTER - fly up
-RIGHT SHIFT - fly down
-LEFT/RIGHT/UP/DOWN ARROW - move without gravity
++ ENTER - fly up
++ RIGHT SHIFT - fly down
++ LEFT/RIGHT/UP/DOWN ARROW - move without gravity
 
 
 <img src="./readme_resources/demo.gif" width="600"/>
